@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中小企业短期出口信用保险测算与风控工具 3.0</title>
+    <style>
+        :root {
+            --primary-color: #004b87;
+            --danger-color: #d32f2f;
+            --warning-bg: #fff3cd;
+            --warning-border: #ffc107;
+            --success-color: #2e7d32;
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 20px; color: var(--primary-color); }
+        .header h1 { margin: 0; font-size: 24px; }
+        .header h2 { margin: 5px 0 0 0; font-size: 16px; font-weight: normal; color: #666; }
+
+        .alert-box {
+            background-color: #f8d7da;
+            border-left: 5px solid var(--danger-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-box h3 { margin-top: 0; color: var(--danger-color); font-size: 18px; }
+        .alert-box h4 { margin: 15px 0 5px 0; color: var(--danger-color); font-size: 15px; }
+        .alert-box p { margin: 5px 0; font-size: 14px; }
+        .english-template {
+            display: block;
+            background-color: #fff;
+            padding: 8px 12px;
+            border-left: 3px solid #ccc;
+            font-family: monospace;
+            color: #555;
+            margin-top: 5px;
+            font-size: 13px;
+            border-radius: 2px;
+        }
+        .legal-note { color: #d32f2f; font-weight: bold; font-size: 12px; display: block; margin-top: 4px; }
+
+        .btn-toggle-template {
+            background-color: #fff;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin: 5px 0 10px 0;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-toggle-template:hover {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+        .template-content {
+            background: #fff;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 10px;
+        }
+
+        .checklist {
+            background-color: var(--warning-bg);
+            border-left: 5px solid var(--warning-border);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .checklist h3 { margin-top: 0; color: #856404; font-size: 18px; }
+        .check-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #ffeeba;
+        }
+        .check-item > label {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; margin-right: 10px; cursor: pointer; }
+        .sub-checks { padding-left: 28px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; margin-bottom: 10px; }
+        .sub-checks label { font-weight: normal; display: flex; align-items: center; cursor: pointer; color: #333; margin-bottom: 0; }
+        .sub-checks input[type="checkbox"] { width: 16px; height: 16px; margin-right: 8px; }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 8px;
+            padding-left: 28px;
+        }
+        .input-group input[type="text"], .input-group input[type="number"], .input-group input[type="date"] {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .input-group input[type="date"] { width: 140px; }
+        .input-group input[type="number"] { width: 110px; }
+        .input-group input[type="text"] { width: 80px; }
+
+        .unified-upload {
+            background: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px dashed #ffc107;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .unified-upload label { font-weight: bold; color: #d32f2f; margin-bottom: 10px; display: block; }
+        .unified-upload input[type="file"] { display: block; margin: 0 auto; padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 60%; cursor: pointer; }
+        .preview-container {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-align: center;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        .preview-container img { width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        .result-text { padding-left: 28px; font-size: 13px; color: #333; margin-top: 5px; }
+        .highlight { font-weight: bold; color: var(--primary-color); font-size: 14px; }
+        .warn-text { color: var(--danger-color); }
+
+        .calculator-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #444; }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .readonly-info { font-size: 13px; color: #666; margin-top: 5px; height: 18px; }
+        .fx-formula { font-size: 11px; color: #7a7a7a; line-height: 1.55; margin-top: 5px; }
+        .fx-formula.inline { margin-top: 0; }
+        .fx-group-wide { grid-column: 1 / -1; }
+        .fx-newrow { grid-column: 1; }
+        #sofrInfo { height: auto; line-height: 1.7; }
+        .sofr-live { color: #1565c0; }
+        .fx-inline { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 2px; }
+        .fx-inline input { width: 240px; }
+        .fx-inline .readonly-info { margin-top: 0; height: auto; }
+        .fx-manual { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 7px; font-size: 11.5px; color: #555; }
+        .fx-manual-title { color: #1565c0; }
+        .fx-manual label { display: inline-flex; align-items: center; gap: 3px; }
+        .fx-manual input { width: 62px; padding: 2px 5px; font-size: 11.5px; border: 1px solid #ccc; border-radius: 3px; }
+        .fx-manual button { padding: 2px 8px; font-size: 11.5px; color: #fff; background: #607d8b; border: none; border-radius: 3px; cursor: pointer; }
+        .fx-manual button:hover { background: #455a64; }
+        .fx-channels { font-size: 11px; color: #666; margin-top: 5px; line-height: 1.8; }
+        .fx-channels a { color: #1565c0; text-decoration: none; border-bottom: 1px dotted #1565c0; margin-right: 8px; white-space: nowrap; }
+        .live-fx-link {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 12.5px;
+            color: #1565c0;
+            text-decoration: none;
+            border-bottom: 1px dashed #1565c0;
+            line-height: 1.5;
+        }
+        .live-fx-link:hover { color: #0d47a1; border-bottom-style: solid; }
+        .live-fx-tip {
+            margin-top: 8px;
+            padding: 7px 10px;
+            background: #e3f2fd;
+            border-left: 3px solid #1565c0;
+            border-radius: 4px;
+            font-size: 12.5px;
+            color: #0d47a1;
+            line-height: 1.6;
+        }
+        .btn-calculate {
+            grid-column: 1 / -1;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn-calculate:hover { background-color: #003366; }
+
+        .results-grid { display: grid; grid-template-columns: 1fr 1.5fr 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .result-card {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .result-card h4 { margin: 0 0 10px 0; font-size: 13px; color: #555; }
+        .result-card .value { font-size: 18px; font-weight: bold; color: var(--primary-color); }
+
+        .cost-detail-list { text-align: left; font-size: 13px; color: #333; line-height: 1.8; }
+        .cost-detail-list .row { display: flex; justify-content: space-between; }
+        .cost-detail-list .total-row { margin-top: 5px; padding-top: 5px; border-top: 1px dashed #aaa; font-weight: bold; color: #00796b; }
+
+        .total-cost-banner {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+        }
+        .total-cost-banner h4 { margin: 0 0 5px 0; color: #e65100; font-size: 15px; }
+        .total-cost-banner .value { font-size: 28px; font-weight: bold; color: #d84315; }
+
+        .pitch-box {
+            background-color: #e8f5e9;
+            border-left: 5px solid var(--success-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+        }
+        .pitch-box h3 { margin-top: 0; color: var(--success-color); }
+        .pitch-text { font-style: italic; color: #222; font-size: 15px; line-height: 1.8; }
+
+        .reference-section {
+            margin-top: 40px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .reference-section h3 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        .table-responsive { overflow-x: auto; max-height: 400px; margin-bottom: 10px; border: 1px solid #dee2e6; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+        th, td { border: 1px solid #dee2e6; padding: 6px; }
+        th { background-color: #f8f9fa; font-weight: bold; color: #333; position: sticky; top: 0; z-index: 1; }
+        tr:nth-child(even) { background-color: #fcfcfc; }
+
+        .rate-lock-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #fff;
+            border: 1px dashed var(--primary-color);
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .rate-lock-box input {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 220px;
+        }
+        .rate-lock-box button {
+            padding: 8px 14px;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .rate-lock-box button:hover { background: #003366; }
+        .rate-lock-msg { font-size: 13px; }
+        .table-responsive.no-max { max-height: none; }
+        .loan-rate-note { font-size: 12px; color: #666; margin: 5px 0 15px 0; }
+
+        /* 国别利率表：实时刷新 UI */
+        .live-rate-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            margin: 8px 0;
+            background: #f1f8e9;
+            border: 1px solid #c5e1a5;
+            border-radius: 5px;
+            font-size: 12.5px;
+            color: #33691e;
+        }
+        .live-rate-bar button {
+            padding: 5px 12px;
+            background: #558b2f;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .live-rate-bar button:hover { background: #33691e; }
+        .live-rate-bar button:disabled { background: #9e9e9e; cursor: not-allowed; }
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #9e9e9e; display: inline-block; flex: 0 0 auto;
+        }
+        .live-dot.on { background: #43a047; box-shadow: 0 0 0 3px rgba(67,160,71,0.18); }
+        .live-dot.warn { background: #f9a825; }
+        .live-dot.spin { background: #1e88e5; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+        #liveRateStatus { flex: 1 1 260px; line-height: 1.5; }
+        .live-tag {
+            display: inline-block;
+            margin-left: 4px;
+            padding: 0 5px;
+            font-size: 10px;
+            line-height: 15px;
+            color: #1b5e20;
+            background: #c8e6c9;
+            border-radius: 8px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .data-tag { display: block; margin-top: 3px; font-size: 10.5px; color: #777; white-space: nowrap; }
+        .data-tag.live { color: #2e7d32; }
+        .ref-link { color: #1565c0; text-decoration: none; border-bottom: 1px dotted #1565c0; white-space: nowrap; }
+        .ref-link:hover { color: #0d47a1; border-bottom-style: solid; }
+        td.rate-cell.is-live { background: #e8f5e9; }
+        td.rate-cell.is-live strong { color: #1b5e20; }
+        td.rate-cell.flash { animation: flashBg 1.4s ease-out; }
+        @keyframes flashBg { 0% { background: #fff59d; } 100% { background: #e8f5e9; } }
+        .loan-rate-col-ref { min-width: 190px; text-align: left; }
+        .loan-live-note { font-size: 11.5px; color: #666; margin: 0 0 12px 0; line-height: 1.6; }
+
+        .disclaimer {
+            margin-top: 30px;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #777;
+            text-align: center;
+        }
+        .disclaimer p { margin: 5px 0; }
+
+        @media (max-width: 900px) {
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .results-grid { grid-template-columns: 1fr 1fr; }
+            .input-group { flex-direction: column; align-items: flex-start; }
+            .input-group input { width: 100%; }
+        }
+        @media (max-width: 600px) {
+            .form-grid, .results-grid { grid-template-columns: 1fr; }
+        }
+        .ver-badge { display: inline-block; background: #1565c0; color: #fff; font-size: 13px; font-weight: 600; padding: 2px 9px; border-radius: 10px; vertical-align: middle; margin-left: 8px; letter-spacing: .5px; }
+        .alert-tips { font-size: 14.5px; line-height: 1.75; margin-top: 4px; }
+        .fx-notice { margin-top: 10px; font-size: 13px; color: #1565c0; background: #e3f2fd; border-left: 3px solid #1565c0; padding: 6px 10px; border-radius: 4px; }
+        .fx-notice a { color: #0d47a1; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>中小企业短期出口信用保险 测算与风控工具 <span class="ver-badge">3.0</span></h1>
+        <h2>Export Credit Insurance Calculator & Risk Control Tool v3.0</h2>
+    </div>
+
+    <!-- 漏保警示（精简版） -->
+    <div class="alert-box">
+        <h3>⚠️ 漏保警示</h3>
+        <p><strong>一个真实案例：</strong>合同约定“货到港后 30 天付款”，自装船日折算约 <strong>OA 84 天</strong>，但只批了 OA 60 天限额、也按 OA 60 天申报交费 —— 出运时没有覆盖 84 天的有效限额，<strong>最终无法理赔</strong>。</p>
+        <p><strong>一句话：</strong>限额批的账期，必须能覆盖“自装船日起算”的完整账期；申报交费按实际账期走。</p>
+
+        <div class="alert-tips">
+            <p>① 美欧、东非限额按 <strong>OA 90 天</strong>申请，西非、拉美按 <strong>OA 120 天</strong>申请（特批更长账期以实际为准）。</p>
+            <p>② 申请限额 ≠ 申报缴费：批了 OA 90 天，实际交易仍可按 OA 60 天申报交费。</p>
+            <p>③ 应付款日写“自装船日起算”，别写“到港日起算”——后者等于自己承担船期延误风险，且要按更长账期买保险。</p>
+            <p>④ 给账期前先算清我方成本（信保保费 + 融资 + 锁汇），并与买方本地融资成本对比，下方测算器可直接估。</p>
+        </div>
+
+        <button type="button" class="btn-toggle-template" onclick="toggleTemplate()">📄 合同账期条款模板（点击展开 / 收起）</button>
+        <div id="templateContent" class="template-content" style="display:none;">
+            <p><strong>合同约定：</strong>XX%预付款，尾款OA 90天（自装船日起算）。</p>
+            <span class="english-template">
+                <strong>参考模板：</strong>10% advance payment shall be effected prior to shipment. The remaining 90% balance shall be due on open account (OA) terms, 90 calendar days after the on-board date. The on-board date means the on-board date endorsed on the ocean bill of lading.
+            </span>
+            <span class="legal-note">具体请咨询贵司法务/外部律师</span>
+
+            <p style="margin-top:15px;"><strong>凭提单副本付款交易：</strong>合同约定XX%预付款，尾款凭提单副本付款，并按OA 30天投保。</p>
+            <span class="english-template">
+                <strong>参考模板：</strong>10% advance payment to be effected before shipment. The remaining 90% balance is payable on open account (OA) terms against copy of bill of lading, and in any event no later than 30 days after the on-board date. The on-board date means the date endorsed on the ocean bill of lading.
+            </span>
+            <span class="legal-note">具体请咨询贵司法务/外部律师</span>
+        </div>
+
+        <div class="fx-notice">🔗 锁汇成本随行就市：测算前先到 <a href="https://www.boc.cn/sourcedb/ffx/index.html" target="_blank" rel="noopener noreferrer">中国银行远期外汇牌价</a> 实时查看，再填下方“人民币远期锁汇成本”。</div>
+    </div>
+
+    <!-- 操作排查清单（精简版） -->
+    <div class="checklist">
+        <h3>📋 操作排查清单（辅助记录）</h3>
+
+        <div class="check-item">
+            <label>1. 限额与合同一致性</label>
+
+            <label style="display: flex; margin: 8px 0 4px;">
+                <input type="checkbox" class="req-order-chk" id="chkLimitDate"> 审批单生效日期
+                <input type="date" id="orderLimitDate" onchange="calcOrderExpiry()" style="margin-left: 10px;">
+            </label>
+            <div class="result-text" style="margin-bottom: 10px;">
+                闲置 120 天 → 失效日：<span id="orderExpiryDate" class="highlight">--</span><strong class="warn-text" style="margin-left:10px;">必须在失效前出运</strong>
+            </div>
+
+            <label style="display: flex; margin-bottom: 4px;">
+                <input type="checkbox" class="req-order-chk" id="chkInfoConsistent"> PI / 合同信息与审批单一致
+            </label>
+            <div class="sub-checks">
+                <label><input type="checkbox" class="req-order-chk" id="chkBuyerName"> 买方名称</label>
+                <label><input type="checkbox" class="req-order-chk" id="chkBuyerAddr"> 买方地址</label>
+                <label><input type="checkbox" class="req-order-chk" id="chkBuyerTax"> 税号</label>
+                <label><input type="checkbox" class="req-order-chk" id="chkBuyerReg"> 注册号</label>
+            </div>
+
+            <label style="display: flex; margin: 12px 0 4px;">
+                <input type="checkbox" class="req-order-chk" id="chkApproval"> 审批结果
+            </label>
+            <div class="input-group" style="padding-left: 28px; margin-bottom: 10px;">
+                <span>支付方式: <input type="text" id="appMethod" value="OA" style="width: 60px;"></span>
+                <span>信用期限: <input type="number" id="appDays" value="90" style="width: 70px;"> 天</span>
+                <span>金额: <input type="text" id="appAmount" value="1,000,000" style="width: 120px;" oninput="formatNumber(this)"> 美元</span>
+            </div>
+
+            <label style="display: flex; margin-bottom: 4px;">
+                <input type="checkbox" class="req-order-chk" id="chkCoverage"> 合同支付方式与账期可被审批结果覆盖
+            </label>
+            <div style="padding-left: 28px; font-size: 14px; color: var(--danger-color); font-weight: bold;">
+                🚨 审批 OA 60 天 / 100 万，合同就不能写 OA 90 天；按装船日起算的实际天数也不得超过批复天数。
+            </div>
+        </div>
+
+        <div class="check-item">
+            <label><input type="checkbox" id="chkShip"> 2. 出运前：限额仍在有效期内</label>
+            <div class="input-group">
+                <span>限额生效日期:</span> <input type="date" id="shipLimitDate" onchange="calcShipExpiry()">
+                <span>预计装船时间:</span> <input type="date" id="shipDate" onchange="checkShipDate()">
+            </div>
+            <div class="result-text">
+                限额失效日期：<span id="shipExpiryDate" class="highlight">--</span>　<span id="shipCheckResult"></span>
+            </div>
+        </div>
+
+        <div class="check-item">
+            <label><input type="checkbox" id="chkDeclare"> 3. 申报交费：账期口径与实际一致</label>
+            <div class="input-group" style="align-items: flex-start;">
+                <span style="white-space: nowrap; margin-top: 5px;">PI 账期条款:</span>
+                <textarea id="piTerms" placeholder="粘贴 PI 约定的账期条款" style="flex: 1; min-width: 260px; height: 52px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; resize: vertical;"></textarea>
+            </div>
+            <div class="input-group">
+                <span>实际装船日期:</span> <input type="date" id="declareShipDate" onchange="calcOaDays()">
+                <span>首笔出运应付款日:</span> <input type="date" id="dueDate" onchange="calcOaDays()">
+                <span>OA 天数：<span id="calcOaDays" class="highlight">--</span> 天</span>
+            </div>
+            <div class="result-text">
+                <strong class="warn-text">支付方式与信用期限不得超出审批单批复范围。</strong>
+            </div>
+            <div id="riskDates" style="padding-left: 28px; font-size: 15px; font-weight: bold; color: var(--danger-color); margin-top: 8px; line-height: 1.6;">
+                <!-- 动态填入两行提醒 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 统一的上传区域 -->
+        <div class="unified-upload">
+            <label>⚠️ 建议此处上传信用限额审批单</label>
+            <input type="file" id="fileUnified" accept="image/*" onchange="previewImage(this)">
+            <div class="preview-container" id="imagePreviewContainer">
+                <img id="imagePreview" src="" alt="截图预览">
+            </div>
+        </div>
+    </div>
+
+    <!-- 测算器 -->
+    <div class="calculator-card">
+        <h3>🧮 保费与资金成本测算 / Premium & Cost Calculator</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>买方国别代码 (Country Code)</label>
+                <select id="countryCode" onchange="onCountryChange()">
+                    <!-- 动态生成 -->
+                </select>
+                <div class="readonly-info" id="countryInfo">国别名称 / 风险分类</div>
+            </div>
+
+            <div class="form-group">
+                <label>交易方式 (Payment Method)</label>
+                <select id="paymentMethod">
+                    <option value="LC">L/C (信用证)</option>
+                    <option value="OA" selected>OA (赊销)</option>
+                    <option value="DA">D/A (承兑交单)</option>
+                    <option value="DP">D/P (付款交单)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>实际账期天数 (Credit Period Days)</label>
+                <input type="number" id="creditDays" value="90" min="1" max="730" oninput="updateFxTenor()">
+            </div>
+
+            <div class="form-group">
+                <label>赊销金额 USD (Credit Amount)</label>
+                <input type="text" id="creditAmount" value="100,000" oninput="formatNumber(this)" onblur="autoCalcHedgeCost()">
+            </div>
+
+            <div class="form-group">
+                <label>是否涉及银行融资 (Bank Financing)</label>
+                <select id="isFinancing" onchange="toggleFinancing()">
+                    <option value="no">不涉及融资 (No)</option>
+                    <option value="yes" selected>涉及融资 (Yes)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>企业自有资金成本 ROE %</label>
+                <input type="number" id="roeRate" value="20.00" step="0.1">
+            </div>
+
+            <div class="form-group" id="financingGroup" style="display: flex;">
+                <label>银行放款比例 % (Financing Ratio)</label>
+                <input type="number" id="financingRatio" value="80" min="1" max="100">
+            </div>
+
+            <div class="form-group" id="financingRateGroup" style="display: flex;">
+                <label>出口信保保单人民币融资成本 %</label>
+                <input type="number" id="financingRate" value="3.00" step="0.01">
+                <div class="readonly-info">参考信保融资行情（如2%-4%）</div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label>保费率 % (Premium Rate)</label>
+                <input type="number" id="premiumRate" value="0.405" step="0.001" min="0">
+                <div class="readonly-info" id="premiumRateInfo">默认 <strong>0.405%</strong>（千分之 4.05）｜请按保单/审批复核，可手动调整</div>
+            </div>
+
+            <div class="form-group fx-newrow">
+                <label>美元融资成本参考 (SOFR + 300bp) %</label>
+                <input type="number" id="sofrRate" value="7.00" step="0.01">
+                <div class="readonly-info" id="sofrInfo">实时 SOFR + 300bp 计算中…<a href="javascript:void(0)" class="live-fx-link" onclick="refreshSofr(true)">↻</a></div>
+            </div>
+
+            <div class="form-group">
+                <label>买方本地币融资成本 %</label>
+                <input type="number" id="localRate" value="20.00" step="0.1">
+                <div class="readonly-info" id="localRateInfo">用于对比买方本地融资成本</div>
+            </div>
+
+            <!-- 人民币远期锁汇成本：整行展示 -->
+            <div class="form-group fx-group-wide">
+                <label>人民币远期锁汇成本 (CNY)</label>
+                <div class="fx-inline">
+                    <input type="text" id="fxHedgeCost" value="5,000" oninput="formatNumber(this)" onblur="autoCalcHedgeCost()">
+                    <div class="readonly-info" id="fxHedgeInfo">即期、三个月远期待填写（中行牌价页抄“现汇买入价 / 买入价”）</div>
+                </div>
+                <div class="fx-manual">
+                    <span class="fx-manual-title">手动牌价：</span>
+                    <label>即期<input type="text" id="fxSpotManual" placeholder="6.6544" oninput="onManualFxInput()"></label>
+                    <label><span id="fxTenorLabel">90天远期（三个月）</span><input type="text" id="fxFwdManual" placeholder="6.5994" oninput="onManualFxInput()"></label>
+                    <span class="fx-formula" id="fxManualMsg">当前账期 90 天，请到远期牌价页选“三个月”的买入价。</span>
+                </div>
+                <div class="fx-channels">
+                    <span>中国银行牌价查询：</span>
+                    <a href="https://www.boc.cn/sourcedb/whpj/" target="_blank" rel="noopener noreferrer">即期外汇牌价（取 美元行·现汇买入价）</a>
+                    <a href="https://www.boc.cn/sourcedb/ffx/index.html" target="_blank" rel="noopener noreferrer"><span id="fxFwdLinkText">远期外汇牌价（取 美元·三个月·买入价）</span></a>
+                </div>
+                <div class="fx-formula">口径：锁汇成本 =（即期 − 对应期限远期）× 美元金额，远期升水按 0 计。中行牌价按“元/100 美元”展示，抄 665.44 或 6.6544 都可以，会自动换算。</div>
+            </div>
+
+            <button class="btn-calculate" onclick="calculate()">立即测算 / Calculate</button>
+        </div>
+
+        <div class="results-grid" id="results" style="display: none;">
+            <div class="result-card">
+                <h4>预估保费成本<br>Est. Premium Cost</h4>
+                <div class="value" id="resPremium">$0.00</div>
+                <small style="color:#666; font-size:12px;" id="resRateText"></small>
+            </div>
+
+            <div class="result-card" style="background: #e0f2f1; text-align: left;">
+                <h4 style="text-align:center; margin-bottom:8px;">出口方综合成本明细<br>Exporter Cost Breakdown</h4>
+                <div class="cost-detail-list">
+                    <div class="row">
+                        <span>债权融资成本:</span>
+                        <span id="resBankCost">$0.00</span>
+                    </div>
+                    <div class="row">
+                        <span>自有资金成本(ROE):</span>
+                        <span id="resEquityCost">$0.00</span>
+                    </div>
+                    <div class="row">
+                        <span>远期锁汇成本:</span>
+                        <span id="resFxCost">¥0.00</span>
+                    </div>
+                    <div style="font-size:11.5px; color:#1565c0; margin-top:2px; line-height:1.5;">
+                        ⚠️ 锁汇成本随市场实时波动，测算前请
+                        <a href="https://www.boc.cn/sourcedb/ffx/index.html" target="_blank" rel="noopener noreferrer" style="color:#1565c0;">点此查看最新远期牌价</a>
+                    </div>
+                    <div class="row total-row">
+                        <span>综合资金成本(USD):</span>
+                        <span id="resExporterCost">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <h4>买方美元融资成本<br>Buyer USD Cost</h4>
+                <div class="value" id="resBuyerUSD">$0.00</div>
+                <small style="color:#666; font-size:12px;" id="resBuyerUSDText">按7.00%计算</small>
+            </div>
+
+            <div class="result-card" style="background: #fff3e0;">
+                <h4>买方本地币融资成本<br>Buyer Local Cost</h4>
+                <div class="value" id="resBuyerLocal" style="color: #e65100;">$0.00</div>
+                <small style="color:#666; font-size:12px;" id="resLocalRateText"></small>
+            </div>
+        </div>
+
+        <div class="total-cost-banner" id="totalCostBanner">
+            <h4>出口方综合总成本（保费 + 资金成本 + 锁汇折USD）</h4>
+            <div class="value" id="resTotalCost">$0.00</div>
+        </div>
+    </div>
+
+    <!-- 谈判话术 -->
+    <div class="pitch-box" id="pitchBox">
+        <h3>💡 业务谈判话术 / Sales Pitch</h3>
+        <div class="pitch-text" id="pitchText"></div>
+    </div>
+
+    <!-- 底部参考资料 -->
+    <div class="reference-section">
+        <h3>🌍 参考资料一：国别（地区）风险分类表 (2018 版)</h3>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>序号</th><th>国家/地区代码</th><th>国家/地区名称</th><th>分类</th>
+                        <th>序号</th><th>国家/地区代码</th><th>国家/地区名称</th><th>分类</th>
+                        <th>序号</th><th>国家/地区代码</th><th>国家/地区名称</th><th>分类</th>
+                    </tr>
+                </thead>
+                <tbody id="countryTableBody"></tbody>
+            </table>
+        </div>
+
+        <h3>📚 参考资料二：国别（本币）中小企业名义贷款利率参考</h3>
+
+        <div class="live-rate-bar">
+            <span class="live-dot" id="liveRateDot"></span>
+            <span id="liveRateStatus">正在尝试获取实时基准利率…</span>
+            <button type="button" id="liveRateBtn" onclick="refreshLiveRates()">立即刷新</button>
+        </div>
+
+        <div class="table-responsive no-max">
+            <table>
+                <thead>
+                    <tr>
+                        <th>国别（本币）</th>
+                        <th>中小企业名义贷款利率</th>
+                        <th>基准利率</th>
+                        <th>CPI</th>
+                        <th style="white-space:nowrap;">实际利率</th>
+                        <th>负担备注</th>
+                        <th class="loan-rate-col-ref">参考链接 / 数据来源<br><span style="font-weight:normal; font-size:11px;">点击查看实时官方数据</span></th>
+                    </tr>
+                </thead>
+                <tbody id="loanRateTableBody"></tbody>
+            </table>
+        </div>
+        <p class="loan-rate-note">说明：测算器中“买方本地币融资成本”会按所选国别自动匹配上表数据；未列明国别可手动输入。选择 TUR 时自动取土耳其中小企业名义贷款利率 41.9%。</p>
+        <p class="loan-live-note" id="loanLiveNote">
+            ⓘ 实时取数说明：页面每次打开/刷新会自动请求公开官方接口，更新美国（纽约联储 SOFR/EFFR）、巴西（央行 Selic）、中国香港（金管局 1M HIBOR 与基准利率）的基准利率，并按“基准利率 + 小企业利差”重算名义利率与实际利率；标 🟢 的行即本次实时更新值。<br>
+            ⓘ 其余国别暂无免密钥的公开实时接口，表中为内置快照，请点击右侧“参考链接”到央行/统计机构官网核对最新数据；CPI 亦为最新公布快照，实时刷新不覆盖 CPI。
+        </p>
+    </div>
+
+    <!-- 免责声明 -->
+    <div class="disclaimer">
+        <p><strong>免责声明 (Disclaimer)：</strong>本工具测算结果仅供试用参考，具体以保单、中国信保“信保通”记载数据为准。</p>
+    </div>
+
+</div>
+
+<script>
+    const EXCHANGE_RATE = 6.7191;
+
+    const countryData = [
+        { code: 'AFG', name: '阿富汗', cat: 'D2' }, { code: 'ALB', name: '阿尔巴尼亚', cat: 'C1' }, { code: 'DZA', name: '阿尔及利亚', cat: 'C2' },
+        { code: 'AND', name: '安道尔', cat: 'B1' }, { code: 'AGO', name: '安哥拉', cat: 'D1' }, { code: 'ATG', name: '安提瓜和巴布达', cat: 'C2' },
+        { code: 'ARG', name: '阿根廷', cat: 'D1' }, { code: 'ARM', name: '亚美尼亚', cat: 'C1' }, { code: 'AUS', name: '澳大利亚', cat: 'A2' },
+        { code: 'AUT', name: '奥地利', cat: 'A2' }, { code: 'AZE', name: '阿塞拜疆', cat: 'C2' }, { code: 'BHS', name: '巴哈马', cat: 'C1' },
+        { code: 'BHR', name: '巴林', cat: 'B2' }, { code: 'BGD', name: '孟加拉国', cat: 'C2' }, { code: 'BRB', name: '巴巴多斯', cat: 'B2' },
+        { code: 'BLR', name: '白俄罗斯', cat: 'C2' }, { code: 'BEL', name: '比利时', cat: 'A2' }, { code: 'BLZ', name: '伯利兹', cat: 'C2' },
+        { code: 'BEN', name: '贝宁', cat: 'D1' }, { code: 'BTN', name: '不丹', cat: 'D1' }, { code: 'BOL', name: '玻利维亚', cat: 'C2' },
+        { code: 'BIH', name: '波斯尼亚和黑塞哥维那', cat: 'C1' }, { code: 'BWA', name: '博茨瓦纳', cat: 'B2' }, { code: 'BRA', name: '巴西', cat: 'C2' },
+        { code: 'BRN', name: '文莱达鲁萨兰国', cat: 'B2' }, { code: 'BGR', name: '保加利亚', cat: 'C1' }, { code: 'BFA', name: '布基纳法索', cat: 'D2' },
+        { code: 'BDI', name: '布隆迪', cat: 'D2' }, { code: 'KHM', name: '柬埔寨', cat: 'C2' }, { code: 'CMR', name: '喀麦隆', cat: 'D1' },
+        { code: 'CAN', name: '加拿大', cat: 'A2' }, { code: 'CPV', name: '佛得角', cat: 'C1' }, { code: 'CAF', name: '中非共和国', cat: 'E' },
+        { code: 'TCD', name: '乍得', cat: 'D2' }, { code: 'CHL', name: '智利', cat: 'B1' }, { code: 'COL', name: '哥伦比亚', cat: 'C2' },
+        { code: 'COM', name: '科摩罗', cat: 'D2' }, { code: 'COG', name: '刚果', cat: 'D2' }, { code: 'COD', name: '刚果民主共和国', cat: 'D2' },
+        { code: 'CRI', name: '哥斯达黎加', cat: 'C1' }, { code: 'CIV', name: '科特迪瓦', cat: 'D1' }, { code: 'HRV', name: '克罗地亚', cat: 'B2' },
+        { code: 'CUB', name: '古巴', cat: 'D2' }, { code: 'CYP', name: '塞浦路斯', cat: 'C1' }, { code: 'CZE', name: '捷克共和国', cat: 'B1' },
+        { code: 'DNK', name: '丹麦', cat: 'A2' }, { code: 'DJI', name: '吉布提', cat: 'D1' }, { code: 'DMA', name: '多米尼克', cat: 'C1' },
+        { code: 'DOM', name: '多米尼加共和国', cat: 'C2' }, { code: 'TMP', name: '东帝汶', cat: 'D2' }, { code: 'ECU', name: '厄瓜多尔', cat: 'D1' },
+        { code: 'EGY', name: '埃及', cat: 'C2' }, { code: 'SLV', name: '萨尔瓦多', cat: 'C2' }, { code: 'GNQ', name: '赤道几内亚', cat: 'D1' },
+        { code: 'ERI', name: '厄立特里亚', cat: 'D1' }, { code: 'EST', name: '爱沙尼亚', cat: 'B2' }, { code: 'ETH', name: '埃塞俄比亚', cat: 'D1' },
+        { code: 'FJI', name: '斐济', cat: 'C2' }, { code: 'FIN', name: '芬兰', cat: 'A2' }, { code: 'FRA', name: '法国', cat: 'A2' },
+        { code: 'GAB', name: '加蓬', cat: 'D1' }, { code: 'GMB', name: '冈比亚', cat: 'D2' }, { code: 'GEO', name: '格鲁吉亚', cat: 'C1' },
+        { code: 'DEU', name: '德国', cat: 'A2' }, { code: 'GHA', name: '加纳', cat: 'D1' }, { code: 'GRC', name: '希腊', cat: 'C1' },
+        { code: 'GRD', name: '格林纳达', cat: 'C2' }, { code: 'GTM', name: '危地马拉', cat: 'C2' }, { code: 'GIN', name: '几内亚', cat: 'D2' },
+        { code: 'GNB', name: '几内亚比绍', cat: 'D2' }, { code: 'GUY', name: '圭亚那', cat: 'C2' }, { code: 'HTI', name: '海地', cat: 'D2' },
+        { code: 'HND', name: '洪都拉斯', cat: 'D1' }, { code: 'HUN', name: '匈牙利', cat: 'B2' }, { code: 'ISL', name: '冰岛', cat: 'B1' },
+        { code: 'IND', name: '印度', cat: 'C1' }, { code: 'IDN', name: '印度尼西亚', cat: 'C2' }, { code: 'IRN', name: '伊朗伊斯兰共和国', cat: 'C2' },
+        { code: 'IRQ', name: '伊拉克', cat: 'D1' }, { code: 'IRL', name: '爱尔兰', cat: 'B1' }, { code: 'ISR', name: '以色列', cat: 'B1' },
+        { code: 'ITA', name: '意大利', cat: 'B2' }, { code: 'JAM', name: '牙买加', cat: 'C1' }, { code: 'JPN', name: '日本', cat: 'A2' },
+        { code: 'JOR', name: '约旦', cat: 'C1' }, { code: 'KAZ', name: '哈萨克斯坦', cat: 'C2' }, { code: 'KEN', name: '肯尼亚', cat: 'D1' },
+        { code: 'KIR', name: '基里巴斯共和国', cat: 'D1' }, { code: 'PRK', name: '朝鲜民主主义人民共和国', cat: 'D2' }, { code: 'KOR', name: '大韩民国', cat: 'B2' },
+        { code: 'KWT', name: '科威特', cat: 'B2' }, { code: 'KGZ', name: '吉尔吉斯斯坦', cat: 'D2' }, { code: 'LAO', name: '老挝人民民主共和国', cat: 'C2' },
+        { code: 'LVA', name: '拉脱维亚', cat: 'C1' }, { code: 'LBN', name: '黎巴嫩', cat: 'C2' }, { code: 'LSO', name: '莱索托', cat: 'D1' },
+        { code: 'LBR', name: '利比里亚', cat: 'D2' }, { code: 'LBY', name: '阿拉伯利比亚民众国', cat: 'D2' }, { code: 'LIE', name: '列支敦士登', cat: 'B1' },
+        { code: 'LTU', name: '立陶宛', cat: 'B2' }, { code: 'LUX', name: '卢森堡', cat: 'A1' }, { code: 'MKD', name: '马其顿共和国', cat: 'C1' },
+        { code: 'MDG', name: '马达加斯加', cat: 'D1' }, { code: 'MWI', name: '马拉维', cat: 'D2' }, { code: 'MYS', name: '马来西亚', cat: 'B2' },
+        { code: 'MDV', name: '马尔代夫', cat: 'C2' }, { code: 'MLI', name: '马里', cat: 'D2' }, { code: 'MLT', name: '马耳他', cat: 'B2' },
+        { code: 'MHL', name: '马绍尔群岛', cat: 'D2' }, { code: 'MRT', name: '毛里塔尼亚', cat: 'D2' }, { code: 'MUS', name: '毛里求斯', cat: 'B2' },
+        { code: 'MEX', name: '墨西哥', cat: 'B2' }, { code: 'FSM', name: '密克罗尼西亚联邦', cat: 'D1' }, { code: 'MDA', name: '摩尔多瓦', cat: 'C1' },
+        { code: 'MCO', name: '摩纳哥', cat: 'B1' }, { code: 'MNG', name: '蒙古', cat: 'D1' }, { code: 'MNE', name: '黑山共和国', cat: 'C2' },
+        { code: 'MAR', name: '摩洛哥', cat: 'C1' }, { code: 'MOZ', name: '莫桑比克', cat: 'D2' }, { code: 'MMR', name: '缅甸', cat: 'D1' },
+        { code: 'NAM', name: '纳米比亚', cat: 'C1' }, { code: 'NRU', name: '瑙鲁', cat: 'D1' }, { code: 'NPL', name: '尼泊尔', cat: 'C2' },
+        { code: 'NLD', name: '荷兰', cat: 'B1' }, { code: 'NZL', name: '新西兰', cat: 'A2' }, { code: 'NIC', name: '尼加拉瓜', cat: 'C2' },
+        { code: 'NER', name: '尼日尔', cat: 'D2' }, { code: 'NGA', name: '尼日利亚', cat: 'D2' }, { code: 'NOR', name: '挪威', cat: 'A2' },
+        { code: 'OMN', name: '阿曼', cat: 'B2' }, { code: 'PAK', name: '巴基斯坦', cat: 'D1' }, { code: 'PLW', name: '帕劳', cat: 'D2' },
+        { code: 'PAN', name: '巴拿马', cat: 'C1' }, { code: 'PNG', name: '巴布亚新几内亚', cat: 'C2' }, { code: 'PRY', name: '巴拉圭', cat: 'C2' },
+        { code: 'PER', name: '秘鲁', cat: 'C1' }, { code: 'PHL', name: '菲律宾', cat: 'C1' }, { code: 'POL', name: '波兰', cat: 'B2' },
+        { code: 'PRT', name: '葡萄牙', cat: 'B2' }, { code: 'QAT', name: '卡塔尔', cat: 'B2' }, { code: 'ROU', name: '罗马尼亚', cat: 'B2' },
+        { code: 'RUS', name: '俄罗斯联邦', cat: 'C2' }, { code: 'RWA', name: '卢旺达', cat: 'D2' }, { code: 'KNA', name: '圣基茨和尼维斯', cat: 'D1' },
+        { code: 'LCA', name: '圣卢西亚', cat: 'D1' },
+        { code: 'VCT', name: '圣文森特和格林纳丁斯', cat: 'D1' }, { code: 'WSM', name: '萨摩亚', cat: 'C2' },
+        { code: 'SMR', name: '圣马力诺', cat: 'B2' }, { code: 'STP', name: '圣多美和普林西比', cat: 'D2' }, { code: 'SAU', name: '沙特阿拉伯', cat: 'B2' },
+        { code: 'SEN', name: '塞内加尔', cat: 'D1' }, { code: 'SRB', name: '塞尔维亚共和国', cat: 'C1' }, { code: 'SYC', name: '塞舌尔', cat: 'C2' },
+        { code: 'SLE', name: '塞拉利昂', cat: 'D2' }, { code: 'SGP', name: '新加坡', cat: 'A1' }, { code: 'SVK', name: '斯洛伐克', cat: 'B2' },
+        { code: 'SVN', name: '斯洛文尼亚', cat: 'B2' }, { code: 'SLB', name: '所罗门群岛', cat: 'D2' }, { code: 'SOM', name: '索马里', cat: 'E' },
+        { code: 'ZAF', name: '南非', cat: 'C1' }, { code: 'SSD', name: '南苏丹', cat: 'D2' }, { code: 'ESP', name: '西班牙', cat: 'B1' },
+        { code: 'LKA', name: '斯里兰卡', cat: 'C2' }, { code: 'SDN', name: '苏丹', cat: 'D2' }, { code: 'SUR', name: '苏里南', cat: 'D1' },
+        { code: 'SWZ', name: '斯威士兰', cat: 'D1' }, { code: 'SWE', name: '瑞典', cat: 'A2' }, { code: 'CHE', name: '瑞士', cat: 'A1' },
+        { code: 'SYR', name: '阿拉伯叙利亚共和国', cat: 'D2' }, { code: 'TJK', name: '塔吉克斯坦', cat: 'D2' }, { code: 'TZA', name: '坦桑尼亚联合共和国', cat: 'D1' },
+        { code: 'THA', name: '泰国', cat: 'B2' }, { code: 'TGO', name: '多哥', cat: 'D2' }, { code: 'TON', name: '汤加', cat: 'C2' },
+        { code: 'TTO', name: '特利尼达和多巴哥', cat: 'C1' }, { code: 'TUN', name: '突尼斯', cat: 'C2' }, { code: 'TUR', name: '土耳其', cat: 'C2' },
+        { code: 'TKM', name: '土库曼斯坦', cat: 'D1' }, { code: 'TUV', name: '图瓦卢', cat: 'D2' }, { code: 'UGA', name: '乌干达', cat: 'D1' },
+        { code: 'UKR', name: '乌克兰', cat: 'D1' }, { code: 'ARE', name: '阿拉伯联合酋长国', cat: 'B2' }, { code: 'GBR', name: '大不列颠及北爱尔兰联合王国', cat: 'A2' },
+        { code: 'USA', name: '美利坚合众国', cat: 'A2' }, { code: 'URY', name: '乌拉圭', cat: 'C1' }, { code: 'UZB', name: '乌兹别克斯坦', cat: 'D1' },
+        { code: 'VUT', name: '瓦努阿图', cat: 'D1' }, { code: 'VEN', name: '委内瑞拉', cat: 'D2' }, { code: 'VNM', name: '越南', cat: 'C1' },
+        { code: 'YEM', name: '也门', cat: 'E' }, { code: 'ZMB', name: '赞比亚', cat: 'D1' }, { code: 'ZWE', name: '津巴布韦', cat: 'E' },
+
+        { code: 'HKG', name: '香港', cat: 'B1' }, { code: 'MAC', name: '澳门', cat: 'B2' }, { code: 'PSE', name: '巴勒斯坦', cat: 'D2' },
+        { code: 'TWN', name: '台湾', cat: 'B1' }, { code: '901', name: '塞卜泰(休达)', cat: 'D2' }, { code: 'ESH', name: '西撒哈拉', cat: 'D2' },
+        { code: '902', name: '马约特岛', cat: 'D2' }, { code: '903', name: '加那利群岛', cat: 'D1' }, { code: 'REU', name: '留尼汪', cat: 'B2' },
+        { code: '904', name: '梅利利亚', cat: 'D2' }, { code: 'VAT', name: '梵蒂冈城', cat: 'B2' }, { code: 'GIB', name: '直布罗陀', cat: 'C2' },
+        { code: 'ABW', name: '阿鲁巴岛', cat: 'B2' }, { code: '905', name: '博内尔', cat: 'D2' }, { code: 'GUF', name: '法属圭亚那', cat: 'B2' },
+        { code: 'GLP', name: '瓜德罗普岛', cat: 'D2' }, { code: 'ANT', name: '荷属安地列斯群岛', cat: 'C2' }, { code: 'CYM', name: '开曼群岛', cat: 'B2' },
+        { code: '906', name: '库腊索岛', cat: 'D2' }, { code: 'MTQ', name: '马提尼克岛', cat: 'D2' }, { code: 'MSR', name: '蒙特塞拉特', cat: 'D2' },
+        { code: 'PRI', name: '波多黎各', cat: 'B2' }, { code: '907', name: '萨巴', cat: 'D2' }, { code: '908', name: '圣马丁岛', cat: 'D2' },
+        { code: 'TCA', name: '特克斯和凯科斯群岛', cat: 'D2' }, { code: 'VGB', name: '英属维尔京群岛', cat: 'B2' }, { code: 'VIR', name: '美属维尔京群岛', cat: 'C1' },
+        { code: 'GRL', name: '格陵兰', cat: 'C1' }, { code: 'BMU', name: '百慕大群岛', cat: 'B2' }, { code: 'PYF', name: '法属波利尼西亚', cat: 'D1' },
+        { code: '909', name: '盖比群岛', cat: 'D2' }, { code: 'COK', name: '库克群岛', cat: 'D2' }, { code: 'NFK', name: '诺福克岛', cat: 'D2' },
+        { code: '910', name: '社会群岛', cat: 'D2' }, { code: '911', name: '土阿莫土群岛', cat: 'D2' }, { code: 'NCL', name: '新喀里多尼亚', cat: 'D1' },
+        { code: '912', name: '马恩岛', cat: 'B2' }, { code: '913', name: '诺曼底群岛', cat: 'B2' },
+
+        { code: 'CHN', name: '中国', cat: 'B2' }
+    ];
+
+    /* ---------- 国别利率表：数据 + 实时取数 ---------- */
+    function fmtSignedPct(v) {
+        const sign = v < 0 ? '−' : '+';
+        return sign + Math.abs(v).toFixed(2) + '%';
+    }
+
+    // benchmark = 用作利差锚的基准利率（数值）；rate = benchmark + spread
+    const loanRateData = [
+        { code: 'CHN', country: '中国（CNY）', rate: 3.00, benchmark: 3.00,
+          policy: '1Y LPR 3.00%（政策利率 1.40%）', cpi: '0.7%',
+          note: '低名义、低通胀，实际温和为正，全球最低梯队',
+          link: 'https://www.chinamoney.com.cn/chinese/bklpr/', source: '中国货币网 · LPR' },
+        { code: 'USA', country: '美国（USD）', rate: 6.91, benchmark: 3.91, liveSource: 'USA',
+          policy: 'FFR 3.75–4.00%；SOFR 3.91%', cpi: '3.70%',
+          note: '名义中高、实际为正偏紧，小企业利差约 300bp',
+          link: 'https://www.newyorkfed.org/markets/reference-rates/sofr', source: '纽约联储 · SOFR / EFFR' },
+        { code: 'BRA', country: '巴西（BRL）', rate: 32.40, benchmark: 13.75, liveSource: 'BRA',
+          policy: 'Selic 13.75%', cpi: '4.63%',
+          note: '超高名义、极高实际，信贷成本全球最高梯队',
+          link: 'https://www.bcb.gov.br/controleinflacao/taxaselic', source: '巴西央行 · Selic' },
+        { code: 'ROU', country: '罗马尼亚（RON）', rate: 8.62, benchmark: 6.50,
+          policy: '政策利率 6.50%（Lombard 7.50%）', cpi: '6.94%',
+          note: '名义偏高、实际微正，通胀基本侵蚀利率',
+          link: 'https://www.bnr.ro/Monetary-Policy-3317.aspx', source: '罗马尼亚央行 · 政策利率' },
+        { code: 'GBR', country: '英国（GBP）', rate: 6.55, benchmark: 4.00,
+          policy: 'Bank Rate 4.00%', cpi: '3.5%',
+          note: '名义中高、实际为正，能源通胀下环境偏紧',
+          link: 'https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate', source: '英格兰银行 · Bank Rate' },
+        { code: 'ESP', country: '西班牙（EUR）', rate: 3.90, benchmark: 2.90,
+          policy: 'ECB 存款便利 2.90%；3M Euribor 2.738%', cpi: '4.9%',
+          note: '名义中性但通胀更高，实际利率为负',
+          link: 'https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html', source: '欧洲央行 · 关键利率' },
+        { code: 'DEU', country: '德国（EUR）', rate: 3.90, benchmark: 2.90,
+          policy: 'ECB 存款便利 2.90%；3M Euribor 2.738%', cpi: '2.8%',
+          note: '名义中性、实际小幅为正，成本相对温和',
+          link: 'https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html', source: '欧洲央行 · 关键利率' },
+        { code: 'RUS', country: '俄罗斯（RUB）', rate: 17.90, benchmark: 14.00,
+          policy: '关键利率 14.00%', cpi: '6.4%',
+          note: '高名义、高实际，紧缩下融资显著偏贵',
+          link: 'https://www.cbr.ru/eng/hd_base/KeyRate/', source: '俄罗斯央行 · 关键利率' },
+        { code: 'AUS', country: '澳大利亚（AUD）', rate: 7.38, benchmark: 4.85,
+          policy: 'Cash Rate 4.85%', cpi: '3.9%',
+          note: '名义偏高、实际为正，处近 18 年高位附近',
+          link: 'https://www.rba.gov.au/statistics/cash-rate/', source: '澳洲联储 · Cash Rate' },
+        { code: 'HKG', country: '中国香港（HKD）', rate: 5.20, benchmark: 2.68, liveSource: 'HKG',
+          policy: '1M HIBOR 2.68%+250bp；P 5.00%', cpi: '1.9%',
+          note: '跟随美元，名义中高、实际为正，本地低通胀',
+          link: 'https://www.hkma.gov.hk/eng/data-publications-and-research/data-and-statistics/', source: '香港金管局 · HIBOR / 基准利率' },
+        { code: 'MEX', country: '墨西哥（MXN）', rate: 17.00, benchmark: 6.25,
+          policy: 'Banxico 6.25%；TIIE28 6.51%', cpi: '3.75%',
+          note: '政策利率中性，但小企业利差极厚，负担偏高',
+          link: 'https://www.banxico.org.mx/', source: '墨西哥央行 · Banxico' },
+        { code: 'TUR', country: '土耳其（TRY）', rate: 41.90, benchmark: 36.00,
+          policy: '一周回购 36.0%', cpi: '29.73%',
+          note: '超高名义、高通胀，实际仍为正；里拉贬值加重偿债压力',
+          link: 'https://www.tcmb.gov.tr/wps/wcm/connect/EN/TCMB+EN/Main+Menu/Core+Functions/Monetary+Policy/Policy+Rate', source: '土耳其央行 · 政策利率' },
+        { code: 'IDN', country: '印度尼西亚（IDR）', rate: 12.00, benchmark: 5.75,
+          policy: 'BI-Rate 5.75%（DF 5.00% / LF 6.50%）；SBDK 小企业 10.00%', cpi: '3.23%',
+          note: '名义中高、实际显著为正；SBDK 是下限，小企业实际利率常再上浮 200bp 左右',
+          link: 'https://www.bi.go.id/en/statistik/indikator/bi-rate.aspx', source: '印尼央行 BI-Rate / 商业银行 SBDK' }
+    ];
+
+    // 初始化派生字段（CPI 数值、实际利率、小企业利差）
+    loanRateData.forEach(item => {
+        item.cpiNum = parseFloat(String(item.cpi).replace(/[^0-9.\-]/g, '')) || 0;
+        item.spread = item.rate - item.benchmark;
+        item.realNum = item.rate - item.cpiNum;
+        item.real = fmtSignedPct(item.realNum);
+        item.live = false;
+        item.updatedAt = '';
+        item.asOf = '';
+    });
+
+    // 官方公开接口（均支持浏览器跨域 CORS）
+    async function fetchJSON(url, timeoutMs) {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), timeoutMs || 9000);
+        try {
+            const res = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return await res.json();
+        } finally {
+            clearTimeout(timer);
+        }
+    }
+
+    // 美元融资成本参考 = 实时 SOFR + 300bp（纽约联储官方接口，CORS 开放）
+    async function refreshSofr(manual) {
+        const info = document.getElementById('sofrInfo');
+        const inp = document.getElementById('sofrRate');
+        if (!info || !inp) return;
+        try {
+            const d = await fetchJSON('https://markets.newyorkfed.org/api/rates/secured/sofr/last/1.json', 8000);
+            const r = (d.refRates && d.refRates[0]) || null;
+            const sofr = Number(r && r.percentRate);
+            if (!isFinite(sofr) || sofr <= 0) throw new Error('bad value');
+            const val = sofr + 3.0;
+            inp.value = val.toFixed(2);
+            const t = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            const mmdd = String(r.effectiveDate || '').slice(5);
+            info.innerHTML = `SOFR ${sofr.toFixed(2)}%（${mmdd}） + 300bp = <strong class="sofr-live">${val.toFixed(2)}%</strong> <span style="color:#aaa;margin:0 4px 0 2px">${t.slice(0,5)}</span>`
+                + `<a href="javascript:void(0)" class="live-fx-link" onclick="refreshSofr(true)">↻</a>`;
+            info.dataset.hasLive = '1';
+            const res = document.getElementById('results');
+            if (res && res.style.display !== 'none') calculate();
+        } catch (e) {
+            info.innerHTML = (info.dataset.hasLive ? '实时刷新失败，沿用上次值，可手填' : '暂未取到实时值，可按 SOFR+300bp 手填')
+                + `<a href="javascript:void(0)" class="live-fx-link" onclick="refreshSofr(true)">↻</a>`;
+        }
+    }
+
+    const LIVE_SOURCES = {
+        USA: async (item) => {
+            const [sofr, effr] = await Promise.all([
+                fetchJSON('https://markets.newyorkfed.org/api/rates/secured/sofr/last/1.json'),
+                fetchJSON('https://markets.newyorkfed.org/api/rates/unsecured/effr/last/1.json')
+            ]);
+            const s = sofr.refRates[0];
+            const e = (effr.refRates && effr.refRates[0]) || null;
+            const ffrText = e && isFinite(e.targetRateFrom) && isFinite(e.targetRateTo)
+                ? `FFR ${e.targetRateFrom.toFixed(2)}–${e.targetRateTo.toFixed(2)}%（EFFR ${Number(e.percentRate).toFixed(2)}%）；`
+                : '';
+            return {
+                benchmark: Number(s.percentRate),
+                policy: `${ffrText}SOFR ${Number(s.percentRate).toFixed(2)}%（小企业利差约 ${Math.round(item.spread * 100)}bp）`,
+                asOf: s.effectiveDate
+            };
+        },
+        BRA: async () => {
+            const d = await fetchJSON('https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json');
+            if (!d || !d.length) throw new Error('empty');
+            const v = Number(d[0].valor);
+            if (!isFinite(v)) throw new Error('bad value');
+            return { benchmark: v, policy: `Selic ${v.toFixed(2)}%`, asOf: d[0].data };
+        },
+        HKG: async (item) => {
+            const d = await fetchJSON('https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/daily-figures-interbank-liquidity');
+            const r = d.result.records[0];
+            const hibor = Number(r.hibor_fixing_1m);
+            const base = Number(r.disc_win_base_rate);
+            if (!isFinite(hibor)) throw new Error('bad hibor');
+            return {
+                benchmark: hibor,
+                policy: `1M HIBOR ${hibor.toFixed(2)}%+${Math.round(item.spread * 100)}bp（小企业利差）；基准利率 ${isFinite(base) ? base.toFixed(2) + '%' : '—'}；P 5.00%`,
+                asOf: r.end_of_date
+            };
+        }
+    };
+
+    const loanRateByCode = loanRateData.reduce((acc, item) => {
+        acc[item.code] = item;
+        return acc;
+    }, {});
+
+    let liveRefreshing = false;
+    async function refreshLiveRates() {
+        if (liveRefreshing) return;
+        liveRefreshing = true;
+
+        const btn = document.getElementById('liveRateBtn');
+        const dot = document.getElementById('liveRateDot');
+        const status = document.getElementById('liveRateStatus');
+        if (btn) { btn.disabled = true; btn.textContent = '获取中…'; }
+        if (dot) dot.className = 'live-dot spin';
+        if (status) status.textContent = '正在从官方接口获取实时基准利率（美国 SOFR/FFR、巴西 Selic、香港 HIBOR）…';
+
+        const targets = loanRateData.filter(i => i.liveSource);
+        const results = await Promise.allSettled(
+            targets.map(i => LIVE_SOURCES[i.liveSource](i))
+        );
+
+        const stamp = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+        const okList = [];
+        const flash = [];
+
+        results.forEach((r, idx) => {
+            const item = targets[idx];
+            if (r.status === 'fulfilled' && r.value && isFinite(r.value.benchmark) && r.value.benchmark > 0) {
+                item.live = true;
+                item.benchmark = r.value.benchmark;
+                item.rate = item.benchmark + item.spread;
+                item.policy = r.value.policy || item.policy;
+                item.asOf = r.value.asOf || '';
+                item.updatedAt = stamp;
+                item.realNum = item.rate - item.cpiNum;
+                item.real = fmtSignedPct(item.realNum);
+                okList.push(item.country);
+                flash.push(item.code);
+            } else {
+                item.live = false;
+                item.updatedAt = '';
+                item.asOf = '';
+            }
+        });
+
+        renderLoanRateTable(flash);
+
+        if (dot) dot.className = 'live-dot ' + (okList.length ? 'on' : 'warn');
+        if (status) {
+            status.textContent = okList.length
+                ? `✅ 已实时更新 ${okList.length} 项：${okList.join('、')}（刷新时间 ${stamp}）；名义利率已按“实时基准 + 小企业利差”重算。其余国别为静态快照，请点“参考链接”核对。`
+                : `⚠️ 实时接口暂不可用（可能受网络或浏览器跨域限制），当前显示内置静态参考值；请点击各行“参考链接”查看最新官方数据。`;
+        }
+        if (btn) { btn.disabled = false; btn.textContent = '立即刷新'; }
+        liveRefreshing = false;
+
+        // 若当前已选中被实时更新的国别，同步刷新“买方本地币融资成本”
+        const code = (document.getElementById('countryCode') || {}).value;
+        if (code && loanRateByCode[code] && loanRateByCode[code].live) {
+            onCountryChange();
+        }
+    }
+
+    window.onload = function() {
+        const select = document.getElementById('countryCode');
+        countryData.forEach(c => {
+            let opt = document.createElement('option');
+            opt.value = c.code;
+            opt.innerText = `${c.code} - ${c.name}`;
+            select.appendChild(opt);
+        });
+        select.value = 'USA';
+        onCountryChange();
+
+        renderCountryTable();
+        renderLoanRateTable();
+        refreshLiveRates();   // 每次打开/刷新页面自动取实时基准利率
+        refreshSofr();        // 美元融资成本参考 = 实时 SOFR + 300bp
+        updateFxTenor();      // 按账期天数匹配中行远期档位（3M/4M…）
+        initManualFx();       // 载入本机保存的手动牌价并折算
+        toggleFinancing();
+        bindChecklistValidation();
+
+        const today = new Date();
+        const defaultDateStr = formatDate(today);
+        document.getElementById('orderLimitDate').value = defaultDateStr;
+        document.getElementById('shipLimitDate').value = defaultDateStr;
+        document.getElementById('shipDate').value = defaultDateStr;
+        document.getElementById('declareShipDate').value = defaultDateStr;
+        document.getElementById('dueDate').value = defaultDateStr;
+    };
+
+    /* 模板显示/收起 */
+    function toggleTemplate() {
+        const el = document.getElementById('templateContent');
+        el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
+    }
+
+    /* 右上角轻提示 */
+    function showToast(msg, isWarn) {
+        let toast = document.getElementById('globalToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'globalToast';
+            toast.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:6px;color:#fff;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,.25);max-width:340px;line-height:1.5;display:none;';
+            document.body.appendChild(toast);
+        }
+        toast.style.background = isWarn ? '#d32f2f' : '#2e7d32';
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 3200);
+    }
+
+    /* 排查清单逐一核对 */
+    function bindChecklistValidation() {
+        const chkLimitDate = document.getElementById('chkLimitDate');
+        const chkInfo = document.getElementById('chkInfoConsistent');
+        const chkBuyerName = document.getElementById('chkBuyerName');
+        const chkBuyerAddr = document.getElementById('chkBuyerAddr');
+        const chkBuyerTax = document.getElementById('chkBuyerTax');
+        const chkBuyerReg = document.getElementById('chkBuyerReg');
+        const chkApproval = document.getElementById('chkApproval');
+        const chkCoverage = document.getElementById('chkCoverage');
+        const chkShip = document.getElementById('chkShip');
+        const chkDeclare = document.getElementById('chkDeclare');
+
+        const subChecks = [chkBuyerName, chkBuyerAddr, chkBuyerTax, chkBuyerReg];
+
+        if (chkLimitDate) {
+            chkLimitDate.addEventListener('change', function() {
+                if (this.checked && !document.getElementById('orderLimitDate').value) {
+                    this.checked = false;
+                    showToast('请先填写信用限额审批单生效日期，再勾选第1项。', true);
+                }
+            });
+        }
+
+        if (chkInfo) {
+            chkInfo.addEventListener('change', function() {
+                if (this.checked) {
+                    const allChecked = subChecks.every(c => c && c.checked);
+                    if (!allChecked) {
+                        this.checked = false;
+                        showToast('请先逐一勾选 2.1 买方名称 / 2.2 买方地址 / 2.3 税号 / 2.4 注册号。', true);
+                    }
+                }
+            });
+        }
+
+        subChecks.forEach(chk => {
+            if (chk) {
+                chk.addEventListener('change', function() {
+                    if (!this.checked && chkInfo && chkInfo.checked) {
+                        chkInfo.checked = false;
+                        showToast('子项未全部勾选，已自动取消第2项“信息一致”勾选。', true);
+                    }
+                });
+            }
+        });
+
+        if (chkApproval) {
+            chkApproval.addEventListener('change', function() {
+                if (this.checked) {
+                    const m = document.getElementById('appMethod').value.trim();
+                    const d = document.getElementById('appDays').value.trim();
+                    const a = document.getElementById('appAmount').value.trim();
+                    if (!m || !d || !a) {
+                        this.checked = false;
+                        showToast('请先完整填写审批结果：支付方式、信用期限、金额。', true);
+                    }
+                }
+            });
+        }
+
+        if (chkCoverage) {
+            chkCoverage.addEventListener('change', function() {
+                if (this.checked) {
+                    const missing = [chkLimitDate, chkInfo, chkApproval].filter(c => !c || !c.checked);
+                    if (missing.length > 0) {
+                        this.checked = false;
+                        showToast('请先逐一完成第1-3项核对，再确认第4项“合同支付方式可被覆盖”。', true);
+                    }
+                }
+            });
+        }
+
+        if (chkShip) {
+            chkShip.addEventListener('change', function() {
+                if (this.checked) {
+                    const limitDate = document.getElementById('shipLimitDate').value;
+                    const shipDate = document.getElementById('shipDate').value;
+                    if (!limitDate || !shipDate) {
+                        this.checked = false;
+                        showToast('请先填写限额生效日期和预计装船时间。', true);
+                        return;
+                    }
+                    const expiry = addDays(limitDate, 120);
+                    if (new Date(shipDate) > expiry) {
+                        this.checked = false;
+                        showToast('预计装船日已超过限额失效日，请先申请展期！', true);
+                    }
+                }
+            });
+        }
+
+        if (chkDeclare) {
+            chkDeclare.addEventListener('change', function() {
+                if (this.checked) {
+                    const pi = document.getElementById('piTerms').value.trim();
+                    const sd = document.getElementById('declareShipDate').value;
+                    const dd = document.getElementById('dueDate').value;
+                    if (!pi || !sd || !dd) {
+                        this.checked = false;
+                        showToast('请先粘贴PI账期条款，并填写实际装船日期和首笔出运应付款日。', true);
+                        return;
+                    }
+                    const diffDays = Math.ceil((new Date(dd) - new Date(sd)) / (1000 * 60 * 60 * 24));
+                    const appDays = parseFloat(document.getElementById('appDays').value);
+                    if (diffDays < 0) {
+                        this.checked = false;
+                        showToast('首笔出运应付款日早于装船日，请核实日期。', true);
+                        return;
+                    }
+                    if (!isNaN(appDays) && diffDays > appDays) {
+                        this.checked = false;
+                        showToast(`实际 OA 天数 ${diffDays} 天已超出审批信用期限 ${appDays} 天，请核实后再勾选！`, true);
+                    }
+                }
+            });
+        }
+    }
+
+    function formatDate(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        return [year, month, day].join('-');
+    }
+
+    function addDays(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    function formatNumber(input) {
+        let val = input.value.replace(/,/g, '');
+        if (val === '') return;
+        if (isNaN(val)) {
+            input.value = val;
+            return;
+        }
+        input.value = parseFloat(val).toLocaleString('en-US');
+    }
+
+    /* ---------- 锁汇成本：手动牌价即时折算 ---------- */
+    const FX_MANUAL_KEY = 'fxManualQuote_v1';
+    let fxManualQuote = null;   // { spotBuy, fwdBuy }
+
+    // 中国银行远期牌价期限档位：一周、一个月…一年（最长一年）
+    const TENOR_LABELS = ['', '一个月', '二个月', '三个月', '四个月', '五个月', '六个月', '七个月', '八个月', '九个月', '十个月', '十一个月', '一年'];
+    let fxTenor = { label: '三个月', days: 90, capped: false, week: false };
+
+    function tenorForDays(days) {
+        if (!isFinite(days) || days <= 0) days = 90;
+        if (days <= 10) return { label: '一周', days: days, capped: false, week: true };
+        let m = Math.round(days / 30);
+        if (m < 1) m = 1;
+        if (m > 12) return { label: '一年', days: days, capped: true, week: false };
+        return { label: TENOR_LABELS[m], days: days, capped: false, week: false };
+    }
+
+    function updateFxTenor() {
+        const days = parseFloat((document.getElementById('creditDays') || {}).value) || 90;
+        const t = tenorForDays(days);
+        fxTenor = t;
+
+        const lbl = document.getElementById('fxTenorLabel');
+        if (lbl) lbl.textContent = `${days}天远期（${t.label}）`;
+
+        const linkText = document.getElementById('fxFwdLinkText');
+        if (linkText) linkText.textContent = `远期外汇牌价（取 美元·${t.label}·买入价）`;
+
+        const msg = document.getElementById('fxManualMsg');
+        if (msg) {
+            if (!fxManualQuote) {
+                msg.style.color = t.capped ? '#e65100' : '#7a7a7a';
+                msg.textContent = t.capped
+                    ? `⚠️ 账期 ${days} 天超过一年，中行远期最长只报“一年”，请按一年期买入价填。`
+                    : `当前账期 ${days} 天，请到远期牌价页选“${t.label}”的买入价。`;
+            } else {
+                msg.style.color = '#e65100';
+                msg.textContent = `账期已改为 ${days} 天，请确认填入的是“${t.label}”买入价（当前远期为 ${fxManualQuote.fwdBuy}）。`;
+            }
+        }
+        updateFxInfoLine();
+        return t;
+    }
+
+    function loadManualFx() {
+        try { const s = localStorage.getItem(FX_MANUAL_KEY); return s ? JSON.parse(s) : null; } catch (e) { return null; }
+    }
+
+    function updateFxInfoLine() {
+        const el = document.getElementById('fxHedgeInfo');
+        if (!el) return;
+        if (fxManualQuote) {
+            el.textContent = `手动牌价：即期 ${fxManualQuote.spotBuy.toFixed(4)} / ${fxTenor.days}天远期（${fxTenor.label}）${fxManualQuote.fwdBuy.toFixed(4)}`;
+        } else {
+            el.textContent = `即期、${fxTenor.label}远期待填写（中行牌价页抄“现汇买入价 / 买入价”）`;
+        }
+    }
+
+    function onManualFxInput() {
+        const s = parseFloat((document.getElementById('fxSpotManual') || {}).value);
+        const f = parseFloat((document.getElementById('fxFwdManual') || {}).value);
+        const msg = document.getElementById('fxManualMsg');
+        if (!isFinite(s) || !isFinite(f) || s <= 0 || f <= 0) {
+            fxManualQuote = null;
+            updateFxInfoLine();
+            if (msg) { msg.style.color = '#7a7a7a'; msg.textContent = `即期、${fxTenor.label}远期两项都填好后自动折算（例：6.6544 / 6.5994）。`; }
+            return;
+        }
+        // 中行页面按“元/100 美元”展示，数值大于 20 时按每百美元自动除以 100
+        const sNorm = s > 20 ? s / 100 : s;
+        const fNorm = f > 20 ? f / 100 : f;
+        fxManualQuote = { spotBuy: sNorm, fwdBuy: fNorm };
+        try { localStorage.setItem(FX_MANUAL_KEY, JSON.stringify(fxManualQuote)); } catch (e) { }
+        updateFxInfoLine();
+        const applied = autoCalcHedgeCost();
+        if (msg) {
+            const diff = sNorm - fNorm;
+            if (diff > 0) {
+                msg.style.color = '#2e7d32';
+                msg.textContent = `✅ 按${fxTenor.label}远期，价差 ${diff.toFixed(4)}，已折算填入${applied == null ? '' : ' ¥' + applied.toLocaleString('en-US')}。`;
+            } else {
+                msg.style.color = '#2e7d32';
+                msg.textContent = `✅ 远期升水 ${Math.abs(diff).toFixed(4)}，锁汇无成本，已按 0 填入。`;
+            }
+        }
+    }
+
+    function initManualFx() {
+        const m = loadManualFx();
+        if (m && isFinite(m.spotBuy) && isFinite(m.fwdBuy)) {
+            fxManualQuote = { spotBuy: m.spotBuy, fwdBuy: m.fwdBuy };
+            const s = document.getElementById('fxSpotManual');
+            const f = document.getElementById('fxFwdManual');
+            if (s) s.value = m.spotBuy;
+            if (f) f.value = m.fwdBuy;
+            updateFxInfoLine();
+            autoCalcHedgeCost();
+        }
+    }
+
+    function autoCalcHedgeCost() {
+        const amountStr = (document.getElementById('creditAmount').value || '').replace(/,/g, '');
+        const amount = parseFloat(amountStr);
+        if (!isFinite(amount) || amount <= 0) return null;
+
+        let costCNY;
+        if (fxManualQuote) {
+            costCNY = Math.max(0, (fxManualQuote.spotBuy - fxManualQuote.fwdBuy) * amount);
+        } else {
+            costCNY = amount * 0.05;   // 未填手动牌价时，沿用 500 元/万美元 的估算口径
+        }
+        const rounded = Math.round(costCNY);
+        document.getElementById('fxHedgeCost').value = rounded.toLocaleString('en-US');
+        return rounded;
+    }
+
+    function previewImage(input) {
+        const container = document.getElementById('imagePreviewContainer');
+        const img = document.getElementById('imagePreview');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                container.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            img.src = '';
+            container.style.display = 'none';
+        }
+    }
+
+    function calcOrderExpiry() {
+        const dateVal = document.getElementById('orderLimitDate').value;
+        if (dateVal) {
+            const expiry = addDays(dateVal, 120);
+            document.getElementById('orderExpiryDate').innerText = formatDate(expiry);
+        }
+    }
+
+    function calcShipExpiry() {
+        const dateVal = document.getElementById('shipLimitDate').value;
+        if (dateVal) {
+            const expiry = addDays(dateVal, 120);
+            document.getElementById('shipExpiryDate').innerText = formatDate(expiry);
+            checkShipDate();
+        }
+    }
+
+    function checkShipDate() {
+        const expiryStr = document.getElementById('shipExpiryDate').innerText;
+        const shipDateVal = document.getElementById('shipDate').value;
+        const resultSpan = document.getElementById('shipCheckResult');
+
+        if (expiryStr !== '--' && shipDateVal) {
+            const expiryDate = new Date(expiryStr);
+            const shipDate = new Date(shipDateVal);
+            if (shipDate <= expiryDate) {
+                resultSpan.innerHTML = `<span style="color:var(--success-color); font-weight:bold;">✅ 预计装船日 ${shipDateVal} 在限额失效日 ${expiryStr} 之前，可以出运。</span>`;
+            } else {
+                resultSpan.innerHTML = `<span style="color:var(--danger-color); font-weight:bold;">❌ 警告！预计装船日 ${shipDateVal} 已超过限额失效日 ${expiryStr}，请提前申请展期！</span>`;
+            }
+        }
+    }
+
+    function calcOaDays() {
+        const shipDateVal = document.getElementById('declareShipDate').value;
+        const dueDateVal = document.getElementById('dueDate').value;
+        const daysSpan = document.getElementById('calcOaDays');
+        const riskDatesDiv = document.getElementById('riskDates');
+
+        if (shipDateVal && dueDateVal) {
+            const shipDate = new Date(shipDateVal);
+            const dueDate = new Date(dueDateVal);
+            const diffTime = dueDate - shipDate;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays >= 0) {
+                daysSpan.innerText = diffDays;
+                if (diffDays > 90) {
+                    daysSpan.innerHTML = `<span style="color:var(--danger-color)">${diffDays} (超额，需核实)</span>`;
+                }
+            } else {
+                daysSpan.innerHTML = `<span style="color:var(--danger-color)">错误 (首笔出运应付款日早于装船日)</span>`;
+            }
+
+            const riskDate30 = addDays(dueDate, 30);
+            const riskDate30Str = formatDate(riskDate30);
+
+            const lossDate60 = addDays(dueDate, 60);
+            const lossDate60Str = formatDate(lossDate60);
+
+            riskDatesDiv.innerHTML = `
+                风险发生日=首笔出运应付款日+30天，即 <span style="color: #d32f2f; text-decoration: underline;">${riskDate30Str}</span>，请立即停止发货！<br>
+                最迟报损日=首笔出运应付款日+60天，即 <span style="color: #d32f2f; text-decoration: underline;">${lossDate60Str}</span>，请立即通过信保通报损、且确保使用U盾成功签名送出！
+            `;
+        } else {
+            riskDatesDiv.innerHTML = '';
+        }
+    }
+
+    function onCountryChange() {
+        const code = document.getElementById('countryCode').value;
+        const country = countryData.find(c => c.code === code);
+        if (country) {
+            let mainCat = country.cat.charAt(0);
+            document.getElementById('countryInfo').innerText = `分类：${country.cat} (按${mainCat}类计算)`;
+        }
+
+        const loan = loanRateByCode[code];
+        const localInput = document.getElementById('localRate');
+        const localInfo = document.getElementById('localRateInfo');
+
+        if (loan) {
+            localInput.value = loan.rate.toFixed(2);
+            localInfo.innerText = `已自动取：${loan.country} 中小企业名义贷款利率 ${loan.rate.toFixed(2)}%`;
+        } else {
+            localInfo.innerText = '未内置该国别利率，可手动输入用于对比买方本地融资成本';
+        }
+    }
+
+    function toggleFinancing() {
+        const isFinancing = document.getElementById('isFinancing').value === 'yes';
+        document.getElementById('financingGroup').style.display = isFinancing ? 'flex' : 'none';
+        document.getElementById('financingRateGroup').style.display = isFinancing ? 'flex' : 'none';
+    }
+
+    function calculate() {
+        const code = document.getElementById('countryCode').value;
+        const country = countryData.find(c => c.code === code);
+
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        const creditDays = parseFloat(document.getElementById('creditDays').value);
+
+        const amountStr = document.getElementById('creditAmount').value.replace(/,/g, '');
+        const creditAmount = parseFloat(amountStr);
+
+        const isFinancing = document.getElementById('isFinancing').value === 'yes';
+        const roeRate = parseFloat(document.getElementById('roeRate').value) / 100;
+        const financingRatio = parseFloat(document.getElementById('financingRatio').value) / 100;
+        const financingRate = parseFloat(document.getElementById('financingRate').value) / 100;
+
+        const fxHedgeCostStr = document.getElementById('fxHedgeCost').value.replace(/,/g, '');
+        const fxHedgeCostCNY = parseFloat(fxHedgeCostStr) || 0;
+        const fxHedgeCostUSD = fxHedgeCostCNY / EXCHANGE_RATE;
+
+        const usdFinancingRateInput = parseFloat(document.getElementById('sofrRate').value);
+        const usdFinancingRate = usdFinancingRateInput / 100;
+        const localRate = parseFloat(document.getElementById('localRate').value) / 100;
+
+        if (!creditDays || !creditAmount) {
+            alert("请输入有效的账期和金额 / Please enter valid days and amount.");
+            return;
+        }
+
+        const premiumRateInput = parseFloat(document.getElementById('premiumRate').value);
+        if (!isFinite(premiumRateInput) || premiumRateInput <= 0) {
+            alert("请输入有效的保费率（0.405 表示千分之 4.05）/ Please enter a valid premium rate.");
+            return;
+        }
+        const rate = premiumRateInput;
+        const isDefaultRate = Math.abs(rate - 0.405) < 1e-9;
+        const premium = creditAmount * (rate / 100);
+
+        let bankCost = 0;
+        let equityCost = 0;
+
+        if (isFinancing) {
+            bankCost = creditAmount * financingRatio * financingRate * (creditDays / 360);
+            equityCost = creditAmount * (1 - financingRatio) * roeRate * (creditDays / 360);
+        } else {
+            bankCost = 0;
+            equityCost = creditAmount * roeRate * (creditDays / 360);
+        }
+        const exporterCost = bankCost + equityCost + fxHedgeCostUSD;
+        const totalCost = exporterCost + premium;
+
+        const buyerUSD = creditAmount * usdFinancingRate * (creditDays / 360);
+        const buyerLocal = creditAmount * localRate * (creditDays / 360);
+
+        document.getElementById('resPremium').innerText = '$' + premium.toFixed(2);
+        document.getElementById('resRateText').innerText =
+            `${rate}%（${(rate * 10).toFixed(2)}‰）· ${isDefaultRate ? '默认值请复核' : '手动取值'}｜${country.cat}`;
+
+        document.getElementById('resBankCost').innerText = '$' + bankCost.toFixed(2);
+        document.getElementById('resEquityCost').innerText = '$' + equityCost.toFixed(2);
+
+        document.getElementById('resFxCost').innerText = `¥${fxHedgeCostCNY.toLocaleString('en-US')} (≈$${fxHedgeCostUSD.toFixed(2)})`;
+
+        document.getElementById('resExporterCost').innerText = '$' + exporterCost.toFixed(2);
+
+        document.getElementById('resBuyerUSD').innerText = '$' + buyerUSD.toFixed(2);
+        document.getElementById('resBuyerUSDText').innerText = `按${usdFinancingRateInput.toFixed(2)}%计算`;
+
+        document.getElementById('resBuyerLocal').innerText = '$' + buyerLocal.toFixed(2);
+        document.getElementById('resLocalRateText').innerText = `年化利率: ${(localRate * 100).toFixed(1)}%`;
+
+        document.getElementById('resTotalCost').innerText = '$' + totalCost.toFixed(2);
+
+        const formatAmountStr = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(creditAmount);
+        let pitchHtml = `
+            张总/John，咱们这笔业务国别是 <strong>${country.name} (${country.cat})</strong>，结算方式为 <strong>${paymentMethod}</strong>，给客户 <strong>${creditDays}天</strong> 的账期，金额 <strong>${formatAmountStr}</strong>。<br><br>
+            帮您算笔账：
+            <br>1. <strong>帮客户省钱：</strong>买方如果在外面做本地币融资（按${(localRate * 100).toFixed(0)}%算），我们相当于帮客户省了约 <strong>$${buyerLocal.toFixed(2)}</strong> 的财务成本！即使做美元融资（按${usdFinancingRateInput.toFixed(2)}%算），也能省 <strong>$${buyerUSD.toFixed(2)}</strong>。
+            <br>2. <strong>咱们的底牌：</strong>咱们只需交 <strong>$${premium.toFixed(2)}</strong> 的保费。咱们总资金成本是 <strong>$${exporterCost.toFixed(2)}</strong>（包含：债权融资$${bankCost.toFixed(2)} + 自有资金$${equityCost.toFixed(2)} + 锁汇约$${fxHedgeCostUSD.toFixed(2)}）。<br>
+            算下来，咱们这笔订单的<strong>综合总成本（保费+资金成本）仅为 $${totalCost.toFixed(2)}</strong>。
+            <br><br>用信保兜底风险，不仅盘活了客户，咱们还能安全接单，这单稳赚不赔！`;
+
+        document.getElementById('pitchText').innerHTML = pitchHtml;
+        document.getElementById('results').style.display = 'grid';
+        document.getElementById('totalCostBanner').style.display = 'block';
+        document.getElementById('pitchBox').style.display = 'block';
+    }
+
+    function renderCountryTable() {
+        const tbody = document.getElementById('countryTableBody');
+        let html = '';
+        let third = Math.ceil(countryData.length / 3);
+        for(let i = 0; i < third; i++) {
+            let c1 = countryData[i];
+            let c2 = countryData[i + third] || { code: '', name: '', cat: '' };
+            let c3 = countryData[i + third * 2] || { code: '', name: '', cat: '' };
+
+            html += `<tr>
+                <td>${i+1}</td><td>${c1.code}</td><td>${c1.name}</td><td><strong>${c1.cat}</strong></td>
+                <td>${i+1+third <= countryData.length ? i+1+third : ''}</td><td>${c2.code}</td><td>${c2.name}</td><td><strong>${c2.cat}</strong></td>
+                <td>${i+1+third*2 <= countryData.length ? i+1+third*2 : ''}</td><td>${c3.code}</td><td>${c3.name}</td><td><strong>${c3.cat}</strong></td>
+            </tr>`;
+        }
+        tbody.innerHTML = html;
+    }
+
+    function renderLoanRateTable(flashCodes) {
+        const tbody = document.getElementById('loanRateTableBody');
+        const flash = new Set(flashCodes || []);
+        let html = '';
+        loanRateData.forEach(item => {
+            const isLive = item.live;
+            const rateCellCls = 'rate-cell' + (isLive ? ' is-live' : '') + (flash.has(item.code) ? ' flash' : '');
+            const tagHtml = isLive ? '<span class="live-tag">实时</span>' : '';
+            const dataTagHtml = isLive
+                ? `<span class="data-tag live">🟢 实时 ${item.updatedAt}${item.asOf ? '（源日期 ' + item.asOf + '）' : ''}</span>`
+                : '<span class="data-tag">⚪ 静态快照</span>';
+            html += `<tr>
+                <td>${item.country}</td>
+                <td class="${rateCellCls}" style="white-space:nowrap;"><strong>${item.rate.toFixed(2)}%</strong>${tagHtml}</td>
+                <td style="text-align:left;">${item.policy}</td>
+                <td>${item.cpi}</td>
+                <td>${item.real}</td>
+                <td style="text-align:left;">${item.note}</td>
+                <td class="loan-rate-col-ref">
+                    <a class="ref-link" href="${item.link}" target="_blank" rel="noopener noreferrer">${item.source} ↗</a>
+                    ${dataTagHtml}
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
