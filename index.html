@@ -23,6 +23,8 @@
             line-height: 1.6;
         }
         .container { max-width: 1100px; margin: 0 auto; }
+        /* 顶层卡片统一按 border-box 计宽，保证左右边缘一致 */
+        .container > * { box-sizing: border-box; }
         .header { text-align: center; margin-bottom: 20px; color: var(--primary-color); }
         .header h1 { margin: 0; font-size: 24px; }
         .header h2 { margin: 5px 0 0 0; font-size: 16px; font-weight: normal; color: #666; }
@@ -495,7 +497,7 @@
         </div>
     </div>
 
-    <!-- 统一的上传区域 -->
+        <!-- 统一的上传区域 -->
         <div class="unified-upload">
             <label>⚠️ 建议此处上传信用限额审批单</label>
             <input type="file" id="fileUnified" accept="image/*" onchange="previewImage(this)">
@@ -503,7 +505,6 @@
                 <img id="imagePreview" src="" alt="截图预览">
             </div>
         </div>
-    </div>
 
     <!-- 测算器 -->
     <div class="calculator-card">
@@ -566,7 +567,7 @@
             <div class="form-group">
                 <label>保费率 % (Premium Rate)</label>
                 <input type="number" id="premiumRate" value="0.405" step="0.001" min="0">
-                <div class="readonly-info" id="premiumRateInfo">默认 <strong>0.405%</strong>（千分之 4.05）｜请按保单/审批复核，可手动调整</div>
+                <div class="readonly-info" id="premiumRateInfo">默认 <strong>0.405%</strong>（4.05‰）｜请复核，可手动调整</div>
             </div>
 
             <div class="form-group fx-newrow">
