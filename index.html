@@ -147,6 +147,7 @@
         .preview-container img { width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
         .result-text { padding-left: 28px; font-size: 13px; color: #333; margin-top: 5px; }
+        .limit-note { margin-left: 28px; padding: 8px 10px; background: #eef4fa; border-left: 3px solid var(--primary-color); border-radius: 4px; font-size: 12.8px; line-height: 1.7; color: #444; }
         .highlight { font-weight: bold; color: var(--primary-color); font-size: 14px; }
         .warn-text { color: var(--danger-color); }
 
@@ -376,6 +377,26 @@
             .input-group { flex-direction: column; align-items: flex-start; }
             .input-group input { width: 100%; }
         }
+        .claim-note { margin: 12px 0 0 28px; padding: 10px 12px; background: #fff5f5; border-left: 4px solid var(--danger-color); border-radius: 4px; font-size: 13.5px; line-height: 1.75; color: #555; }
+        .claim-note strong { display: block; color: var(--danger-color); margin-bottom: 4px; }
+
+        /* 凭提单副本付款（5 日内）风险时点判定模块 */
+        .bl-copy-card h3 { margin-top: 0; color: var(--primary-color); font-size: 18px; }
+        .bl-copy-intro { font-size: 13.5px; color: #555; background: #f4f7f9; border-left: 3px solid var(--primary-color); padding: 8px 12px; border-radius: 4px; line-height: 1.7; margin: 8px 0 14px 0; }
+        .bl-hint { font-size: 13.5px; color: #666; margin-top: 12px; padding-left: 2px; }
+        .bl-kv { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 12px; font-size: 13.5px; color: #333; }
+        .bl-kv b { color: var(--primary-color); }
+        .bl-conclusion { margin-top: 14px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px; font-weight: bold; line-height: 1.75; }
+        .bl-conclusion.reject { background: #fff3e0; border-left: 5px solid #e65100; color: #bf4b00; }
+        .bl-conclusion.default { background: #fdecea; border-left: 5px solid var(--danger-color); color: var(--danger-color); }
+        .bl-path { margin-top: 10px; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px 12px; font-size: 13.5px; line-height: 1.8; color: #333; }
+        .bl-path.active { border-color: var(--danger-color); background: #fffafa; }
+        .bl-path.muted { opacity: .6; }
+        .bl-path h5 { margin: 0 0 4px 0; font-size: 14px; color: #333; }
+        .bl-date { font-weight: bold; color: var(--danger-color); text-decoration: underline; }
+        .bl-small { font-size: 12.5px; color: #7a7a7a; }
+        .bl-extra { margin-top: 10px; font-size: 13px; color: #555; background: #fff8e1; border-left: 3px solid #ffc107; padding: 8px 10px; border-radius: 4px; line-height: 1.7; }
+        .bl-copy-disclaimer { margin-top: 12px; font-size: 12px; color: #8a6d3b; background: #fff8e1; border-left: 3px solid #ffc107; padding: 8px 10px; border-radius: 4px; line-height: 1.65; }
         @media (max-width: 600px) {
             .form-grid, .results-grid { grid-template-columns: 1fr; }
         }
@@ -396,12 +417,12 @@
     <!-- 漏保警示（精简版） -->
     <div class="alert-box">
         <h3>⚠️ 漏保警示</h3>
-        <p><strong>一个真实案例：</strong>合同约定“货到港后 30 天付款”，自装船日折算约 <strong>OA 84 天</strong>，但只批了 OA 60 天限额、也按 OA 60 天申报交费 —— 出运时没有覆盖 84 天的有效限额，<strong>最终无法理赔</strong>。</p>
-        <p><strong>一句话：</strong>限额批的账期，必须能覆盖“自装船日起算”的完整账期；申报交费按实际账期走。</p>
+        <p><strong>一个真实案例：</strong>合同约定“货到港后 30 天付款”，自装船日折算约 <strong>OA 84 天</strong>，但只批了 OA 60 天的信用限额 —— 出运时的账期已超出批复覆盖范围，<strong>最终无法理赔</strong>。</p>
+        <p><strong>一句话：</strong>限额批复的账期，必须能覆盖“自装船日起算”的完整账期。本产品按年度保费计收，<strong>没有逐笔申报、也没有交费环节</strong>，出运前只能靠限额账期兜住，不存在“按低账期申报”的补救路径。</p>
 
         <div class="alert-tips">
             <p>① 美欧、东非限额按 <strong>OA 90 天</strong>申请，西非、拉美按 <strong>OA 120 天</strong>申请（特批更长账期以实际为准）。</p>
-            <p>② 申请限额 ≠ 申报缴费：批了 OA 90 天，实际交易仍可按 OA 60 天申报交费。</p>
+            <p>② 账期口径唯一：批的是 OA 90 天，合同就不能写 OA 90 天以上的账期，按装船日折算的实际天数也不得超过批复天数——多出的部分不在保险责任内。</p>
             <p>③ 应付款日写“自装船日起算”，别写“到港日起算”——后者等于自己承担船期延误风险，且要按更长账期买保险。</p>
             <p>④ 给账期前先算清我方成本（信保保费 + 融资 + 锁汇），并与买方本地融资成本对比，下方测算器可直接估。</p>
         </div>
@@ -433,10 +454,10 @@
 
             <label style="display: flex; margin: 8px 0 4px;">
                 <input type="checkbox" class="req-order-chk" id="chkLimitDate"> 审批单生效日期
-                <input type="date" id="orderLimitDate" onchange="calcOrderExpiry()" style="margin-left: 10px;">
+                <input type="date" id="orderLimitDate" style="margin-left: 10px;">
             </label>
-            <div class="result-text" style="margin-bottom: 10px;">
-                闲置 120 天 → 失效日：<span id="orderExpiryDate" class="highlight">--</span><strong class="warn-text" style="margin-left:10px;">必须在失效前出运</strong>
+            <div class="limit-note" style="margin-bottom: 10px;">
+                <strong>限额有效期：</strong>本产品限额<strong>没有“闲置 120 天失效”机制</strong>，批复后持续有效、不因未出运而失效。但遇以下情形会失效或被撤销：① 同一买方新的信用限额生效，原限额自动失效；② 提交《索赔申请书》之日起自动撤销；③ 风险发生重大变化时保险人可调整或撤销（书面通知）。<strong>出运前务必在信保通复核买方当前是否有有效批限。</strong>
             </div>
 
             <label style="display: flex; margin-bottom: 4px;">
@@ -467,18 +488,24 @@
         </div>
 
         <div class="check-item">
-            <label><input type="checkbox" id="chkShip"> 2. 出运前：限额仍在有效期内</label>
+            <label><input type="checkbox" id="chkShip"> 2. 出运前：复核买方是否有有效批限</label>
             <div class="input-group">
-                <span>限额生效日期:</span> <input type="date" id="shipLimitDate" onchange="calcShipExpiry()">
-                <span>预计装船时间:</span> <input type="date" id="shipDate" onchange="checkShipDate()">
+                <span>预计装船时间:</span> <input type="date" id="shipDate">
+                <span>本次复核日期:</span> <input type="date" id="recheckDate">
+                <span>信保通限额余额:</span> <input type="text" id="limitBalance" placeholder="USD" oninput="formatNumber(this)" style="width: 120px;"> 美元
+            </div>
+            <div class="sub-checks">
+                <label><input type="checkbox" id="chkLimitValid"> 该买方当前存在有效批复限额（未被撤销或调整）</label>
+                <label><input type="checkbox" id="chkLimitAmount"> 限额余额 ≥ 本次出运金额</label>
+                <label><input type="checkbox" id="chkLimitTerm"> 批复账期 ≥ 自装船日起算的实际账期</label>
             </div>
             <div class="result-text">
-                限额失效日期：<span id="shipExpiryDate" class="highlight">--</span>　<span id="shipCheckResult"></span>
+                🚨 本产品限额无闲置失效机制、批出后长期有效，但新限额生效即旧限额失效、提交索赔自动撤销、风险重大变化可被调整或撤销 —— <strong>每次出运前都要重新复核，不能沿用上一票的结论。</strong>
             </div>
         </div>
 
         <div class="check-item">
-            <label><input type="checkbox" id="chkDeclare"> 3. 申报交费：账期口径与实际一致</label>
+            <label><input type="checkbox" id="chkDeclare"> 3. 限额账期：覆盖“自装船日起算”的实际账期（本产品无申报、无逐笔交费）</label>
             <div class="input-group" style="align-items: flex-start;">
                 <span style="white-space: nowrap; margin-top: 5px;">PI 账期条款:</span>
                 <textarea id="piTerms" placeholder="粘贴 PI 约定的账期条款" style="flex: 1; min-width: 260px; height: 52px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; resize: vertical;"></textarea>
@@ -491,9 +518,52 @@
             <div class="result-text">
                 <strong class="warn-text">支付方式与信用期限不得超出审批单批复范围。</strong>
             </div>
-            <div id="riskDates" style="padding-left: 28px; font-size: 15px; font-weight: bold; color: var(--danger-color); margin-top: 8px; line-height: 1.6;">
-                <!-- 动态填入两行提醒 -->
+            <div id="riskDates" style="padding-left: 28px; font-size: 15px; font-weight: bold; color: var(--danger-color); margin-top: 8px; line-height: 1.7;">
+                <!-- 动态填入出运后关键时点 -->
             </div>
+
+            <div class="claim-note">
+                <strong>📌 出运后：索赔要点（本产品只走“索赔”，无报损环节）</strong>
+                <div>① 索赔材料：提交《索赔申请书》及《索赔单证明细表》列明的文件、单证；材料不全又未按要求补齐的，保险人有权拒绝受理。</div>
+                <div>② 核赔与赔款：保险人受理索赔后 <strong>90 日</strong>内核实责任并书面告知核赔结果；作出赔付决定后 <strong>30 日</strong>内支付赔款。</div>
+                <div>③ 赔付口径：赔付基数取“核定损失金额”与“信用限额”中的<strong>较低者</strong>，且不超过发票金额；赔付金额＝赔付基数 × 赔偿比例。</div>
+                <div>④ 限额自动撤销：自提交《索赔申请书》之日起，保险人对该买方（或开证行）批复的信用限额自动撤销。</div>
+                <div>⑤ 除外情形：知道或应当知道承保风险已发生、或买方根本违约/预期违约后仍继续出运的损失，保险人不赔；汇率变动损失亦不赔。</div>
+                <div>⑥ 追偿义务：提交索赔后须委托保险人追偿或按保险人指示自行追偿，否则保险人有权降低赔偿比例或拒绝赔偿。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 模块：凭提单副本付款（5 日内）风险时点判定 ===== -->
+    <div class="calculator-card bl-copy-card">
+        <h3>🚢 凭提单副本付款（副本发出后 N 日内）风险时点判定</h3>
+        <p class="bl-copy-intro">
+            适用场景：合同约定部分预付款，尾款凭提单副本付款、并按 OA 5 天投保。判定原则：把「实际到港日」和「应付款日＋30 天（拖欠风险成立日）」两个时点比一比，<strong>哪个先到就按哪个风险算</strong> —— 到港在先、买方未付款赎单 → 按拒收风险走 15 日；拖欠成立在先 → 按拖欠风险走 60 日。
+        </p>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>① 装船日期（提单装船日）</label>
+                <input type="date" id="blShipDate" onchange="calcBlCopyRisk()">
+            </div>
+            <div class="form-group">
+                <label>② 发送提单副本之日</label>
+                <input type="date" id="blCopyDate" onchange="calcBlCopyRisk()">
+            </div>
+            <div class="form-group">
+                <label>③ 信用期限（自发送副本日起，天）</label>
+                <input type="number" id="blCreditDays" value="5" min="1" max="365" oninput="calcBlCopyRisk()">
+            </div>
+            <div class="form-group">
+                <label>④ 船舶预计到港日（ETA）</label>
+                <input type="date" id="blEtaDate" onchange="calcBlCopyRisk()">
+            </div>
+        </div>
+
+        <div id="blCopyResult"><div class="bl-hint">填写四项输入后自动判定风险路径与截止日。</div></div>
+
+        <div class="bl-copy-disclaimer">
+            <strong>免责声明：</strong>本模块仅按 3.0 版条款第六条、第三十条的时限规则做日期演算，风险类型最终定性、索赔材料要求及是否受理，均以理赔人员的意见和保单条款为准，仅供内部参考，不构成对理赔结果的承诺。
         </div>
     </div>
 
@@ -1042,7 +1112,6 @@
         const today = new Date();
         const defaultDateStr = formatDate(today);
         document.getElementById('orderLimitDate').value = defaultDateStr;
-        document.getElementById('shipLimitDate').value = defaultDateStr;
         document.getElementById('shipDate').value = defaultDateStr;
         document.getElementById('declareShipDate').value = defaultDateStr;
         document.getElementById('dueDate').value = defaultDateStr;
@@ -1137,27 +1206,40 @@
                     const missing = [chkLimitDate, chkInfo, chkApproval].filter(c => !c || !c.checked);
                     if (missing.length > 0) {
                         this.checked = false;
-                        showToast('请先逐一完成第1-3项核对，再确认第4项“合同支付方式可被覆盖”。', true);
+                        showToast('请先完成限额与合同一致性核对（生效日期、信息一致、审批结果），再确认“合同支付方式可被覆盖”。', true);
                     }
                 }
             });
         }
 
         if (chkShip) {
+            const limitSubChecks = [
+                document.getElementById('chkLimitValid'),
+                document.getElementById('chkLimitAmount'),
+                document.getElementById('chkLimitTerm')
+            ];
             chkShip.addEventListener('change', function() {
                 if (this.checked) {
-                    const limitDate = document.getElementById('shipLimitDate').value;
                     const shipDate = document.getElementById('shipDate').value;
-                    if (!limitDate || !shipDate) {
+                    if (!shipDate) {
                         this.checked = false;
-                        showToast('请先填写限额生效日期和预计装船时间。', true);
+                        showToast('请先填写预计装船时间，再勾选第2项。', true);
                         return;
                     }
-                    const expiry = addDays(limitDate, 120);
-                    if (new Date(shipDate) > expiry) {
+                    if (!limitSubChecks.every(c => c && c.checked)) {
                         this.checked = false;
-                        showToast('预计装船日已超过限额失效日，请先申请展期！', true);
+                        showToast('请先复核三项：有效批限、限额余额、批复账期。', true);
                     }
+                }
+            });
+            limitSubChecks.forEach(chk => {
+                if (chk) {
+                    chk.addEventListener('change', function() {
+                        if (!this.checked && chkShip.checked) {
+                            chkShip.checked = false;
+                            showToast('复核子项未全部勾选，已自动取消第2项勾选。', true);
+                        }
+                    });
                 }
             });
         }
@@ -1348,39 +1430,6 @@
         }
     }
 
-    function calcOrderExpiry() {
-        const dateVal = document.getElementById('orderLimitDate').value;
-        if (dateVal) {
-            const expiry = addDays(dateVal, 120);
-            document.getElementById('orderExpiryDate').innerText = formatDate(expiry);
-        }
-    }
-
-    function calcShipExpiry() {
-        const dateVal = document.getElementById('shipLimitDate').value;
-        if (dateVal) {
-            const expiry = addDays(dateVal, 120);
-            document.getElementById('shipExpiryDate').innerText = formatDate(expiry);
-            checkShipDate();
-        }
-    }
-
-    function checkShipDate() {
-        const expiryStr = document.getElementById('shipExpiryDate').innerText;
-        const shipDateVal = document.getElementById('shipDate').value;
-        const resultSpan = document.getElementById('shipCheckResult');
-
-        if (expiryStr !== '--' && shipDateVal) {
-            const expiryDate = new Date(expiryStr);
-            const shipDate = new Date(shipDateVal);
-            if (shipDate <= expiryDate) {
-                resultSpan.innerHTML = `<span style="color:var(--success-color); font-weight:bold;">✅ 预计装船日 ${shipDateVal} 在限额失效日 ${expiryStr} 之前，可以出运。</span>`;
-            } else {
-                resultSpan.innerHTML = `<span style="color:var(--danger-color); font-weight:bold;">❌ 警告！预计装船日 ${shipDateVal} 已超过限额失效日 ${expiryStr}，请提前申请展期！</span>`;
-            }
-        }
-    }
-
     function calcOaDays() {
         const shipDateVal = document.getElementById('declareShipDate').value;
         const dueDateVal = document.getElementById('dueDate').value;
@@ -1402,19 +1451,103 @@
                 daysSpan.innerHTML = `<span style="color:var(--danger-color)">错误 (首笔出运应付款日早于装船日)</span>`;
             }
 
+            // 拖欠风险成立日 = 应付款日 + 30 天（条款第三十条：“拖欠”指买方超过应付款日 30 日仍未付款）
             const riskDate30 = addDays(dueDate, 30);
             const riskDate30Str = formatDate(riskDate30);
 
-            const lossDate60 = addDays(dueDate, 60);
-            const lossDate60Str = formatDate(lossDate60);
+            // 索赔截止日 = 知道/应当知道拖欠风险发生之日（即风险成立日）+ 60 天，条款第六条
+            const claimDeadline = addDays(riskDate30, 60);
+            const claimDeadlineStr = formatDate(claimDeadline);
 
             riskDatesDiv.innerHTML = `
-                风险发生日=首笔出运应付款日+30天，即 <span style="color: #d32f2f; text-decoration: underline;">${riskDate30Str}</span>，请立即停止发货！<br>
-                最迟报损日=首笔出运应付款日+60天，即 <span style="color: #d32f2f; text-decoration: underline;">${lossDate60Str}</span>，请立即通过信保通报损、且确保使用U盾成功签名送出！
+                <div style="margin-bottom:6px;">📌 出运后关键时点（依据 3.0 版条款第六条、第三十条）</div>
+                <div style="font-weight:normal; color:#333; line-height:1.75;">
+                    ① 拖欠风险成立日＝首笔出运应付款日＋30 天，即 <span style="color:#d32f2f; text-decoration:underline; font-weight:bold;">${riskDate30Str}</span>。买方逾期满 30 日即构成条款所称“拖欠”，此后对该买方的继续出运，损失不在保险责任范围内。<br>
+                    ② <strong>索赔截止日（拖欠风险）＝风险成立日＋60 天，即 <span style="color:#d32f2f; text-decoration:underline;">${claimDeadlineStr}</span></strong>（相当于应付款日＋90 天）。本产品没有“报损”环节，须在此日期前寄送盖章索赔材料。<br>
+                    ③ 其他风险（买方破产、拒绝接收货物、政治风险等）：自<strong>知道或应当知道</strong>风险发生之日起 <strong>15 日</strong>内索赔，无固定日历日，一旦发生须立即提交。<br>
+                    ④ 超过上述期限，保险人有权降低赔偿比例或拒绝受理索赔申请（事先经保险人书面同意的除外）。
+                </div>
             `;
         } else {
             riskDatesDiv.innerHTML = '';
         }
+    }
+
+    /* ---------- 凭提单副本付款：拒收 / 拖欠两条路径的时点判定 ---------- */
+    function daysBetweenStr(fromStr, toStr) {
+        return Math.round((new Date(toStr) - new Date(fromStr)) / 86400000);
+    }
+
+    function calcBlCopyRisk() {
+        const ship = document.getElementById('blShipDate').value;
+        const copy = document.getElementById('blCopyDate').value;
+        const daysRaw = document.getElementById('blCreditDays').value;
+        const eta = document.getElementById('blEtaDate').value;
+        const box = document.getElementById('blCopyResult');
+        if (!box) return;
+
+        const days = parseInt(daysRaw, 10);
+        if (!ship || !copy || !eta || !isFinite(days) || days <= 0) {
+            box.innerHTML = '<div class="bl-hint">填写四项输入后自动判定；信用期限默认 5 天（自发送提单副本之日起算）。</div>';
+            return;
+        }
+
+        // 应付款日 = 发送提单副本之日 + 信用期限
+        const due = formatDate(addDays(copy, days));
+        const oaFromShip = daysBetweenStr(ship, due);
+
+        // 路径 A：拒收——风险发生日按实际到港日，15 日内索赔
+        const rejectRisk = eta;
+        const rejectDeadline = formatDate(addDays(eta, 15));
+
+        // 路径 B：拖欠——应付款日 + 30 天成立，风险发生日 + 60 天为索赔截止日
+        const defaultRisk = formatDate(addDays(due, 30));
+        const defaultDeadline = formatDate(addDays(due, 90));
+
+        // 判定规则：两个风险发生时点取“先到”的那个
+        //   拒收：货物到港、买方未付款赎单 → 风险发生时点 = 实际到港日
+        //   拖欠：应付款日 + 30 天仍未付款 → 风险发生时点 = 应付款日＋30 天
+        const rejectHappensFirst = new Date(eta) <= new Date(defaultRisk);
+        const etaVsDue = daysBetweenStr(due, eta);           // 到港比应付款日晚几天（负数=早到）
+        const etaVsDefault = daysBetweenStr(defaultRisk, eta); // 到港比拖欠成立日晚几天
+
+        let warn = '';
+        if (new Date(copy) < new Date(ship)) warn += '⚠️ 发送提单副本之日早于装船日，请核实日期。<br>';
+        if (oaFromShip <= 0) warn += '⚠️ 应付款日不晚于装船日，自装船日起算的实际账期不足 1 天，请核实。<br>';
+
+        const kv = '<div class="bl-kv">'
+            + '<span>应付款日（副本日＋' + days + ' 天）：<b>' + due + '</b></span>'
+            + '<span>拖欠风险成立日（应付款日＋30 天）：<b>' + defaultRisk + '</b></span>'
+            + '<span>自装船日起算实际账期：<b>' + oaFromShip + ' 天</b></span>'
+            + '<span>到港日 vs 应付款日：<b>' + (etaVsDue >= 0 ? '晚 ' + etaVsDue + ' 天' : '早 ' + Math.abs(etaVsDue) + ' 天') + '</b></span>'
+            + '<span>到港日 vs 拖欠成立日：<b>' + (etaVsDefault >= 0 ? '晚 ' + etaVsDefault + ' 天' : '早 ' + Math.abs(etaVsDefault) + ' 天') + '</b></span>'
+            + '</div>';
+
+        const conclusion = rejectHappensFirst
+            ? '<div class="bl-conclusion reject">🚢 判定结果：<strong>按拒收风险</strong>。到港日 ' + eta + ' 早于/等于拖欠成立日 ' + defaultRisk + ' —— 两个风险时点中<strong>到港在先</strong>。货物到港时买方仍未付款赎正本提单，即按<strong>拒收（拒绝接收货物）</strong>口径：风险发生日＝实际到港日 <u>' + rejectRisk + '</u>，须在 <strong>' + rejectDeadline + '</strong> 前寄送盖章索赔材料（到港日＋15 天）。</div>'
+            : '<div class="bl-conclusion default">🚢 判定结果：<strong>按拖欠风险</strong>。到港日 ' + eta + ' 晚于拖欠成立日 ' + defaultRisk + ' —— 两个风险时点中<strong>拖欠成立在先</strong>。应付款日＋30 天买方仍未付款，拖欠风险已于 ' + defaultRisk + ' 成立，索赔截止日 <strong>' + defaultDeadline + '</strong>（风险发生日＋60 天，相当于应付款日＋90 天），须在此前寄送盖章索赔材料。</div>';
+
+        const pathReject = '<div class="bl-path ' + (rejectHappensFirst ? 'active' : 'muted') + '">'
+            + '<h5>路径 A｜拒收风险（到港在先，买方未付款赎单）' + (rejectHappensFirst ? '　✅ 本案适用' : '') + '</h5>'
+            + '风险发生日＝实际到港日 <span class="bl-date">' + rejectRisk + '</span>　→　索赔截止日＝到港日＋15 天 <span class="bl-date">' + rejectDeadline + '</span>'
+            + '<br><span class="bl-small">依据条款第六条：拖欠以外的其他风险（含拒绝接收货物），自知道或应当知道风险发生之日起 15 日内索赔。</span></div>';
+
+        const pathDefault = '<div class="bl-path ' + (rejectHappensFirst ? 'muted' : 'active') + '">'
+            + '<h5>路径 B｜拖欠风险（应付款日＋30 天仍未付款）' + (rejectHappensFirst ? '' : '　✅ 本案适用') + '</h5>'
+            + '风险发生日＝应付款日＋30 天 <span class="bl-date">' + defaultRisk + '</span>　→　索赔截止日＝风险发生日＋60 天 <span class="bl-date">' + defaultDeadline + '</span>'
+            + '<br><span class="bl-small">依据条款第六条、第三十条：超过应付款日 30 日未付即构成“拖欠”，自知道或应当知道之日起 60 日内索赔。</span></div>';
+
+        const earliest = new Date(rejectDeadline) <= new Date(defaultDeadline) ? rejectDeadline : defaultDeadline;
+        const extra = '<div class="bl-extra">'
+            + '<strong>实操提醒：</strong><br>'
+            + '① 判定原则：比较“到港日”和“应付款日＋30 天”，<strong>哪个先到就按哪个风险算</strong>；上表已按此自动判断。<br>'
+            + '② 两条路径的最早截止日为 <span class="bl-date">' + earliest + '</span>，宁可先按最早日倒排、提前寄送盖章索赔材料，不要卡最后一天。<br>'
+            + '③ 若买方在应付款日前已付清并赎单，则上述风险均不成立；若到港时买方明确拒收、拒付，即使拖欠已成立，也可能按拒收口径从到港日起算 15 日 —— 以实际情形和理赔人员认定为准。<br>'
+            + '④ 限额账期：按装船日起算的实际账期为 ' + oaFromShip + ' 天，批复的信用期限必须覆盖该天数（本产品按年缴保费、无逐笔申报），否则超出部分可能不在保险责任内。<br>'
+            + '⑤ 逾期索赔，保险人有权降低赔偿比例或拒绝受理（事先经保险人书面同意的除外）。'
+            + '</div>';
+
+        box.innerHTML = '<div style="margin-top:4px;">' + warn + '</div>' + kv + conclusion + pathReject + pathDefault + extra;
     }
 
     function onCountryChange() {
